@@ -60,7 +60,7 @@ class Login extends Component {
         error: ""
       },
       async () => {
-        if (!loginValidator(this.state.email, this.state.password)) return;
+        if (!loginValidator(this.state.email, this.state.password)) return
         try {
           const result = await Login.service.login(credentials);
           if (!result.success) {
@@ -70,6 +70,7 @@ class Login extends Component {
             });
           }
           window.localStorage.setItem("auth_token", result.token);
+          window.localStorage.setItem("user", JSON.stringify({...result.user,isLoggedIn: true}));
           updateUser({
             isLoggedIn: true,
             ...result.user

@@ -27,10 +27,13 @@ const Register = Loadable({
 class App extends Component {
   constructor(props) {
     super(props);
+    const userFromStorage = window.localStorage.getItem('user');
+    const parsedUser = userFromStorage ? JSON.parse(userFromStorage) :{};
 
     this.state = {
       user: {
         ...defaultUserState,
+        ...parsedUser,
         updateUser: this.updateUser
       }
     };
