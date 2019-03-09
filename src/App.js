@@ -1,51 +1,64 @@
-import React, { Component } from 'react';
-import { HashRouter, Route, Switch } from 'react-router-dom';
-// import { renderRoutes } from 'react-router-config';
-import Loadable from 'react-loadable';
-import './App.scss';
+import React, { Component, Fragment } from "react";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import "./App.scss";
+import Loadable from "react-loadable";
+import "./App.scss";
+import { UserProvider, defaultUserState } from "./context/user-context";
+import Logout from './views/Logout';
 
-const loading = () => <div className="animated fadeIn pt-3 text-center">Loading...</div>;
+const loading = () => (
+  <div className="animated fadeIn pt-3 text-center">Loading...</div>
+);
 
-// Containers
-const DefaultLayout = Loadable({
-  loader: () => import('./containers/DefaultLayout'),
-  loading
-});
-
-// Pages
+// Login
 const Login = Loadable({
-  loader: () => import('./views/Pages/Login'),
+  loader: () => import("./views/Login"),
   loading
 });
 
+// Register
 const Register = Loadable({
-  loader: () => import('./views/Pages/Register'),
-  loading
-});
-
-const Page404 = Loadable({
-  loader: () => import('./views/Pages/Page404'),
-  loading
-});
-
-const Page500 = Loadable({
-  loader: () => import('./views/Pages/Page500'),
+  loader: () => import("./views/Register"),
   loading
 });
 
 class App extends Component {
+  constructor(props) {
+    super(props);
 
+    this.state = {
+      user: {
+        ...defaultUserState,
+        updateUser: this.updateUser
+      }
+    };
+  }
+
+  updateUser = user => {
+    this.setState({ user });
+  };
   render() {
+    const { user } = this.state;
     return (
-      <HashRouter>
-          <Switch>
-            <Route exact path="/login" name="Login Page" component={Login} />
-            <Route exact path="/register" name="Register Page" component={Register} />
-            <Route exact path="/404" name="Page 404" component={Page404} />
-            <Route exact path="/500" name="Page 500" component={Page500} />
-            <Route path="/" name="Home" component={DefaultLayout} />
-          </Switch>
-      </HashRouter>
+      <Router>
+        <Fragment>
+          <UserProvider value={user}>
+            <ToastContainer />
+            <Switch>
+              <Route exact path="/login" name="Login Page" component={Login} />
+              <Route
+                exact
+                path="/register"
+                name="Register Page"
+                component={Register}
+              />
+              <Route exact path="/logout" name="Logout" component={Logout} />
+            </Switch>
+          </UserProvider>
+        </Fragment>
+      </Router>
     );
   }
 }
