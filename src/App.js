@@ -12,6 +12,12 @@ const loading = () => (
   <div className="animated fadeIn pt-3 text-center">Loading...</div>
 );
 
+//DefaultLayout
+const DefaultLayout = Loadable({
+  loader: () => import('./layouts/DefaultLayout'),
+  loading
+});
+
 // Login
 const Login = Loadable({
   loader: () => import("./views/Login"),
@@ -42,6 +48,7 @@ class App extends Component {
   updateUser = user => {
     this.setState({ user });
   };
+
   render() {
     const { user } = this.state;
     return (
@@ -58,6 +65,7 @@ class App extends Component {
                 component={Register}
               />
               <Route exact path="/logout" name="Logout" component={Logout} />
+              <Route path="/" name="Login Page" component={DefaultLayout} />
             </Switch>
           </UserProvider>
         </Fragment>
