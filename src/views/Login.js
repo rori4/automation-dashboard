@@ -15,9 +15,9 @@ import {
   Row
 } from "reactstrap";
 import Auth from "../utils/auth";
-import loginValidator from "../utils/loginValidator";
+import loginValidator from "../utils/validations/loginValidator";
 import AuthenticationService from "../services/authentication-service";
-import handleError from "../utils/handleError";
+import { handleError } from "../utils/customToast";
 import { UserConsumer } from "../context/user-context";
 
 class Login extends Component {
@@ -60,7 +60,7 @@ class Login extends Component {
         error: ""
       },
       async () => {
-        if (!loginValidator(this.state.email, this.state.password)) return
+        if (!loginValidator(this.state.email, this.state.password)) return;
         try {
           const result = await Login.service.login(credentials);
           if (!result.success) {
@@ -70,7 +70,10 @@ class Login extends Component {
             });
           }
           window.localStorage.setItem("auth_token", result.token);
-          window.localStorage.setItem("user", JSON.stringify({...result.user,isLoggedIn: true}));
+          window.localStorage.setItem(
+            "user",
+            JSON.stringify({ ...result.user, isLoggedIn: true })
+          );
           updateUser({
             isLoggedIn: true,
             ...result.user
@@ -185,7 +188,7 @@ class Login extends Component {
 const LoginWithContext = props => {
   return (
     <UserConsumer>
-      {(user) => (
+      {user => (
         <Login
           {...props}
           isLoggedIn={user.isLoggedIn}

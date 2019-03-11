@@ -14,8 +14,8 @@ import {
   Row
 } from "reactstrap";
 import AuthenticationService from "./../services/authentication-service";
-import handleError from "./../utils/handleError";
-import registerValidator from "./../utils/registerValidator";
+import {handleError} from "../utils/customToast";
+import registerValidator from "../utils/validations/registerValidator";
 import { UserConsumer } from "../context/user-context";
 
 class Register extends Component {
@@ -33,12 +33,6 @@ class Register extends Component {
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
-
-  // componentWillMount() {
-  //   if (Auth.isUserAuthenticated()) {
-  //     this.props.history.push("/");
-  //   }
-  // }
 
   handleChange = ({ target }) => {
     this.setState({ [target.name]: target.value });

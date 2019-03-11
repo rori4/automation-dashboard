@@ -4,20 +4,20 @@ const emailRegex = new RegExp(
 
 function registerValidator(state) {
   const { username, email, password, repeatPassword } = state;
-  let error = {};
+  let errors = {};
   username === undefined || username.length === 0
-    ? (error.username = "Username is required")
-    : (delete error.username);
+    ? (errors.username = "Username is required")
+    : (delete errors.username);
   password !== repeatPassword && password.length !== 0 && repeatPassword.length !== 0
-    ? (error.repeatPassword = "Passwords do not match")
-    : (delete error.repeatPassword);
+    ? (errors.repeatPassword = "Passwords do not match")
+    : (delete errors.repeatPassword);
   password.length < 8 && password.length !== 0
-    ? (error.password = "Password must be at least 8 characters")
-    : (delete error.password);
+    ? (errors.password = "Password must be at least 8 characters")
+    : (delete errors.password);
   !emailRegex.test(email) && email.length !== 0
-    ? (error.email = "Please provide a correct email address")
-    : (delete error.email);
-  return error;
+    ? (errors.email = "Please provide a correct email address")
+    : (delete errors.email);
+  return errors;
 }
 
 export default registerValidator;

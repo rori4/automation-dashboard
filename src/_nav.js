@@ -16,7 +16,7 @@ export default {
     },
     {
       name: 'Book List',
-      url: '/books',
+      url: '/books/list',
       icon: 'icon-list',
     },
     {
@@ -39,7 +39,7 @@ export default {
     },
     {
       name: 'Course List',
-      url: '/courses',
+      url: '/courses/list',
       icon: 'icon-list',
     },
     {
@@ -62,7 +62,7 @@ export default {
     },
     {
       name: 'Giveaway List',
-      url: '/giveaways',
+      url: '/giveaways/list',
       icon: 'icon-list',
     },
     {

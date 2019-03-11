@@ -3,6 +3,7 @@ import { createContext } from "react";
 const defaultUserState = {
   roles: [],
   user: "",
+  email: "",
   isLoggedIn: false,
   updateUser() {}
 };
