@@ -1,5 +1,4 @@
 import React, { Component, lazy, Suspense } from "react";
-import { Bar, Line } from "react-chartjs-2";
 import {
   Button,
   Card,
@@ -9,16 +8,14 @@ import {
   Progress,
   Row,
   Table,
-  Container,
   Input,
   InputGroup,
   InputGroupAddon,
   InputGroupText
 } from "reactstrap";
-import { CustomTooltips } from "@coreui/coreui-plugin-chartjs-custom-tooltips";
-import { getStyle, hexToRgba } from "@coreui/coreui/dist/js/coreui-utilities";
+import { getStyle } from "@coreui/coreui/dist/js/coreui-utilities";
 
-const Widget03 = lazy(() => import("../../components/Widgets/Widget03"));
+const Widget03 = lazy(() => import("../components/Widgets/Widget03"));
 
 const brandPrimary = getStyle("--primary");
 const brandSuccess = getStyle("--success");
@@ -60,23 +57,23 @@ class Dashboard extends Component {
       <div className="animated fadeIn">
         <Row>
           <Col>
-          <Card>
-          <InputGroup className="input-prepend">
-              <InputGroupAddon addonType="prepend">
-                <InputGroupText>
-                  <i className="fa fa-search" />
-                </InputGroupText>
-              </InputGroupAddon>
-              <Input
-                size="16"
-                type="text"
-                placeholder="What are you looking for?"
-              />
-              <InputGroupAddon addonType="append">
-                <Button color="info">Search</Button>
-              </InputGroupAddon>
-            </InputGroup>
-          </Card>
+            <Card>
+              <InputGroup className="input-prepend">
+                <InputGroupAddon addonType="prepend">
+                  <InputGroupText>
+                    <i className="fa fa-search" />
+                  </InputGroupText>
+                </InputGroupAddon>
+                <Input
+                  size="16"
+                  type="text"
+                  placeholder="What are you looking for?"
+                />
+                <InputGroupAddon addonType="append">
+                  <Button color="info">Search</Button>
+                </InputGroupAddon>
+              </InputGroup>
+            </Card>
           </Col>
         </Row>
         <Row>
@@ -758,6 +755,8 @@ class Dashboard extends Component {
               </CardBody>
             </Card>
           </Col>
+        </Row>
+        <Row>
           <Col>
             <Card>
               <CardHeader>Last Published Giveaways</CardHeader>

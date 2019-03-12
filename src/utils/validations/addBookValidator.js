@@ -1,7 +1,4 @@
-const regex = /dp\/(.*?)\//gm;
-
 function addBookValidator(state) {
-    
   const {
     amazonUrl,
     title,
@@ -11,6 +8,7 @@ function addBookValidator(state) {
     keywords,
     authorEmail
   } = state;
+  let regex = /dp\/(.*?)\//gm;
   let result = regex.exec(amazonUrl);
   let error = {};
   amazonUrl === undefined || amazonUrl === "" || amazonUrl.length === 0
@@ -22,7 +20,7 @@ function addBookValidator(state) {
   title === undefined || title === "" || title.length === 0
     ? (error.title = "Title is required")
     : delete error.title;
-  authorName === undefined|| authorName === "" || authorName.length === 0
+  authorName === undefined || authorName === "" || authorName.length === 0
     ? (error.authorName = "Author Name is required")
     : delete error.authorName;
   synopsis === undefined || synopsis === "" || synopsis.length === 0

@@ -17,16 +17,18 @@ import {
 } from "reactstrap";
 import Iframe from "react-iframe";
 import numeral from "numeral";
-import addBookValidator from "../../utils/validations/addBookValidator";
+import addBookValidator from "./../../utils/validations/addBookValidator";
 import AmazonService from "./../../services/amazon-service";
+import BookService from "./../../services/book-service";
 import { handleError, handleInfo } from "../../utils/customToast";
 import { UserConsumer } from "../../context/user-context";
 
 class AddBook extends Component {
   static amazonService = new AmazonService();
+  static bookService = new BookService();
   constructor(props) {
     super(props);
-    this.state = {
+    this.initialState = {
       amazonUrl: "",
       title: "",
       authorName: "",
@@ -36,10 +38,11 @@ class AddBook extends Component {
       bookCover: "",
       salesRank: "",
       reviewsIframe: "",
-      authorEmail: props.userEmail,
+      authorEmail: this.props.userEmail,
       amazonFetched: false,
       errors: {}
     };
+    this.state = this.initialState;
   }
 
   handleChange = ({ target }) => {
@@ -65,11 +68,28 @@ class AddBook extends Component {
     }
   };
 
-  handleSubmit = () => {
-    let errors = addBookValidator(this.state);
-    this.setState({
-      errors
-    });
+  handleSubmit = async e => {
+    try {
+      e.preventDefault();
+      let errors = addBookValidator(this.state);
+      this.setState(
+        {
+          errors
+        },
+        async () => {
+          if (Object.keys(errors).length === 0) {
+            let result = await AddBook.bookService.add(this.state);
+            handleInfo(result.message);
+          }
+        }
+      );
+    } catch (error) {
+      handleError(error.message);
+    }
+  };
+
+  handleReset = () => {
+    this.setState(this.initialState);
   };
 
   render() {
@@ -95,14 +115,15 @@ class AddBook extends Component {
               <CardHeader>
                 <strong>Add Kindle Book</strong>
               </CardHeader>
-              <CardBody>
-                <Form
-                  onSubmit={this.handleSubmit}
-                  action=""
-                  method="post"
-                  encType="multipart/form-data"
-                  className="form-horizontal"
-                >
+              <Form
+                onSubmit={this.handleSubmit}
+                onReset={this.handleReset}
+                action=""
+                method="post"
+                encType="multipart/form-data"
+                className="form-horizontal"
+              >
+                <CardBody>
                   <FormGroup row>
                     <Col md="3">
                       <Label htmlFor="amazonUrl">Amazon Link</Label>
@@ -253,25 +274,30 @@ class AddBook extends Component {
                       />
                       <div class="invalid-feedback">{errors.authorEmail}</div>
                       <FormText className="help-block">
-                        Please enter/edit your book title
+                        Please enter/edit your email
                       </FormText>
                     </Col>
                   </FormGroup>
-                </Form>
-              </CardBody>
-              <CardFooter>
-                <Button
-                  type="submit"
-                  className="mr-3"
-                  size="sm"
-                  color="primary"
-                >
-                  <i className="fa fa-dot-circle-o" /> Submit
-                </Button>
-                <Button type="reset" className="mr-3" size="sm" color="danger">
-                  <i className="fa fa-ban" /> Reset
-                </Button>
-              </CardFooter>
+                </CardBody>
+                <CardFooter>
+                  <Button
+                    type="submit"
+                    className="mr-3"
+                    size="sm"
+                    color="primary"
+                  >
+                    <i className="fa fa-dot-circle-o" /> Submit
+                  </Button>
+                  <Button
+                    type="reset"
+                    className="mr-3"
+                    size="sm"
+                    color="danger"
+                  >
+                    <i className="fa fa-ban" /> Reset
+                  </Button>
+                </CardFooter>
+              </Form>
             </Card>
           </Col>
           <Col>
@@ -309,7 +335,9 @@ class AddBook extends Component {
                   <CardBody>
                     <Media
                       className="col-12"
-                      src={amazonFetched ? bookCover : "../assets/img/no-image.png"}
+                      src={
+                        amazonFetched ? bookCover : "../assets/img/no-image.png"
+                      }
                     />
                   </CardBody>
                 </Card>
@@ -330,7 +358,8 @@ class AddBook extends Component {
                       />
                     ) : (
                       <Alert color="primary" className="text-center">
-                        Please provide an Amazon URL so we can fetch book reviews
+                        Please provide an Amazon URL so we can fetch book
+                        reviews
                       </Alert>
                     )}
                   </CardBody>

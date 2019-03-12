@@ -1,1 +1,16 @@
+.img-book {
+  max-width: 100%;
+  height: auto;
+}
 
+.book-list > img {
+    vertical-align: baseline;
+    vertical-align: initial;
+}
+
+.book-list {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+}
