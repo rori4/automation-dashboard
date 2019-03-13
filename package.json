@@ -39,6 +39,7 @@
     "react-toastify": "^4.5.2",
     "reactstrap": "^7.1.0",
     "simple-line-icons": "^2.4.1",
+    "sweetalert-react": "^0.4.11",
     "toastr": "^2.1.4"
   },
   "devDependencies": {

@@ -1,8 +1,8 @@
 import { post, get, remove } from '../data/crud';
 
-class BookService {
+class CourseService {
   constructor() {
-    this.baseUrl = "http://localhost:5000/books";
+    this.baseUrl = "http://localhost:5000/courses";
     this.saveUrl = `${this.baseUrl}/save`;
     this.deleteUrl = `${this.baseUrl}/delete`;
     this.getUrl = `${this.baseUrl}/get`;
@@ -26,4 +26,4 @@ class BookService {
   }
 }
 
-export default BookService;
+export default CourseService;

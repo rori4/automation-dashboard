@@ -13,8 +13,12 @@ import {
   InputGroupAddon,
   InputGroupText
 } from "reactstrap";
-import BookService from "./../../services/book-service";
+import SweetAlert from "sweetalert-react";
+import BookService from "../../services/book-service";
 import { handleError, handleInfo } from "./../../utils/customToast";
+import { getStyle } from "@coreui/coreui/dist/js/coreui-utilities";
+
+const brandDanger = getStyle("--danger");
 
 class BookList extends Component {
   static bookService = new BookService();
@@ -24,6 +28,9 @@ class BookList extends Component {
     this.state = {
       books: [],
       search: "",
+      showDelete: false,
+      deleteItemId: "",
+      deleteItemTitle: "",
       isLoading: true
     };
   }
@@ -36,6 +43,26 @@ class BookList extends Component {
     this.setState({ [target.name]: target.value });
     this.retreiveBooks();
     console.log(this.state);
+  };
+
+  confirmDeleteDialog = async () => {
+    const { deleteItemId } = this.state;
+    try {
+      let result = await BookList.bookService.delete({ id: deleteItemId });
+      result.success ? handleInfo(result.message) : handleError(result.message);
+    } catch (error) {
+      handleError(error.message);
+    }
+    this.hideDialog();
+    this.retreiveBooks();
+  };
+
+  cancelDeleteDialog = () => {
+    this.hideDialog();
+  };
+
+  hideDialog = () => {
+    this.setState({ showDelete: false, deleteItemId: "", deleteItemTitle: "" });
   };
 
   componentDidMount() {
@@ -60,7 +87,7 @@ class BookList extends Component {
   }
 
   render() {
-    const { isLoading, books } = this.state;
+    const { isLoading, books, showDelete, deleteItemTitle } = this.state;
     return (
       <div className="animated fadeIn">
         <Row>
@@ -108,7 +135,7 @@ class BookList extends Component {
                     ) : (
                       <Fragment>
                         {books.map((item, key) => (
-                          <tr>
+                          <tr key={key}>
                             <td className="text-center">
                               <div className="book-list">
                                 <img
@@ -128,14 +155,47 @@ class BookList extends Component {
                             </td>
                             <td className="text-center">{item.authorEmail}</td>
                             <td>
-                              <a class="btn btn-success" href="#">
-                                <i class="fa fa-search-plus" />
+                              <a
+                                class="btn btn-warning mr-2 mb-2"
+                                href={"/books/stats/" + item._id}
+                              >
+                                <i class="fa fa-area-chart" />
                               </a>
-                              <a class="btn btn-success" href="#">
-                                <i class="fa fa-search-plus" />
+                              <a
+                                class="btn btn-warning mr-2 mb-2"
+                                href={"/books/promote/" + item._id}
+                              >
+                                <i class="fa fa-flash" />
                               </a>
-                              <a class="btn btn-success" href="#">
-                                <i class="fa fa-search-plus" />
+                              <a
+                                class="btn btn-success mr-2 mb-2"
+                                href={"/books/edit/" + item._id}
+                              >
+                                <i class="fa fa-pencil" />
+                              </a>
+                              <a
+                                class="btn btn-danger mr-2 mb-2"
+                                onClick={() =>
+                                  this.setState({
+                                    showDelete: true,
+                                    deleteItemId: item._id,
+                                    deleteItemTitle: item.title
+                                  })
+                                }
+                                href="#"
+                              >
+                                <i class="fa fa-trash" />
+                                <SweetAlert
+                                  show={showDelete}
+                                  type="warning"
+                                  showCancelButton={true}
+                                  confirmButtonText="Delete"
+                                  confirmButtonColor={brandDanger}
+                                  title={"Delete " + deleteItemTitle + "?"}
+                                  text="Are you sure you want to delete this item?"
+                                  onConfirm={this.confirmDeleteDialog}
+                                  onCancel={this.cancelDeleteDialog}
+                                />
                               </a>
                             </td>
                           </tr>

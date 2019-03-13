@@ -16,16 +16,15 @@ import {
 } from "reactstrap";
 import { handleError, handleInfo } from "../../utils/customToast";
 import { UserConsumer } from "../../context/user-context";
-import UdemyService from "./../../services/udemy-service";
+import courseValidator from './../../utils/validations/courseValidator';
 
-class AddCourse extends Component {
-  static udemyService = new UdemyService();
+class Giveaway extends Component {
   constructor(props) {
     super(props);
     this.initialState = {
       udemyUrl: "",
       title: "",
-      coursePrice: "",
+      price: "",
       instructorName: "",
       summary: "",
       keywords: "",
@@ -42,36 +41,19 @@ class AddCourse extends Component {
     console.log(this.state);
   };
 
-  retrieveUdemyData = async () => {
-    const { udemyUrl } = this.state;
-    try {
-      let result = await AddCourse.udemyService.info(udemyUrl);
-      if (result.success) {
-        let course = result.course;
-        course.udemyFetched = true;
-        this.setState(course);
-      } else {
-        handleInfo(result.message);
-      }
-    } catch (error) {
-      handleError(error.message);
-    }
-  };
-
   handleSubmit = async e => {
     try {
       e.preventDefault();
-      //   let errors = addBookValidator(this.state);
-      let errors = {};
+      let errors = courseValidator(this.state);
       this.setState(
         {
           errors
         },
         async () => {
           if (Object.keys(errors).length === 0) {
-            // let result = await AddBook.bookService.add(this.state);
-            let result = {};
+            let result = await Giveaway.courseService.save(this.state);
             handleInfo(result.message);
+            this.props.history.push('/courses/list');
           }
         }
       );
@@ -83,6 +65,36 @@ class AddCourse extends Component {
   handleReset = () => {
     this.setState(this.initialState);
   };
+  
+  retrieveUdemyData = async () => {
+    const { udemyUrl } = this.state;
+    try {
+      let result = await Giveaway.udemyService.info({ udemyUrl });
+      if (result.success) {
+        let course = result.course;
+        course.udemyFetched = true;
+        this.setState(course);
+        this.setState({errors: courseValidator(this.state)});
+      } else {
+        handleInfo(result.message);
+      }
+    } catch (error) {
+      handleError(error.message);
+    }
+  };
+
+  async componentDidMount() {
+    try {
+      const id = this.props.match.params.id;
+      if (id) {
+        let result = await Giveaway.courseService.get({id});
+        result.course.udemyFetched = true;
+        this.setState(result.course);
+      }
+    } catch (error) {
+      handleError(error.message);
+    }
+  }
 
   render() {
     const {
@@ -91,7 +103,7 @@ class AddCourse extends Component {
       instructorName,
       keywords,
       courseCover,
-      coursePrice,
+      price,
       udemyFetched,
       instructorEmail,
       errors,
@@ -103,7 +115,7 @@ class AddCourse extends Component {
           <Col xs="12" md={{ size: 6 }}>
             <Card>
               <CardHeader>
-                <strong>Add Udemy Course</strong>
+                <strong>Add Udemy Giveaway</strong>
               </CardHeader>
               <Form
                 onSubmit={this.handleSubmit}
@@ -276,16 +288,14 @@ class AddCourse extends Component {
               <Col xs="12" md="12" lg="6">
                 <Card color="warning">
                   <CardBody>
-                    <div className="h4 m-0">
-                      {udemyFetched ? coursePrice : "-"}
-                    </div>
-                    <div>Course Price</div>
+                    <div className="h4 m-0">{udemyFetched ? price : "-"}</div>
+                    <div>Giveaway Price</div>
                   </CardBody>
                 </Card>
                 <Card color="danger">
                   <CardBody>
                     <div className="h4 m-0">{udemyFetched ? title : "-"}</div>
-                    <div>Course Title</div>
+                    <div>Giveaway Title</div>
                   </CardBody>
                 </Card>
                 <Card color="info">
@@ -318,11 +328,11 @@ class AddCourse extends Component {
     );
   }
 }
-const AddCourseWithContext = props => {
+const GiveawayWithContext = props => {
   return (
     <UserConsumer>
-      {user => <AddCourse {...props} userEmail={user.email} />}
+      {user => <Giveaway {...props} userEmail={user.email} />}
     </UserConsumer>
   );
 };
-export default AddCourseWithContext;
+export default GiveawayWithContext;

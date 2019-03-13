@@ -17,13 +17,13 @@ import {
 } from "reactstrap";
 import Iframe from "react-iframe";
 import numeral from "numeral";
-import addBookValidator from "./../../utils/validations/addBookValidator";
-import AmazonService from "./../../services/amazon-service";
-import BookService from "./../../services/book-service";
+import bookValidator from "../../utils/validations/bookValidator";
+import AmazonService from "../../services/amazon-service";
+import BookService from "../../services/course-service";
 import { handleError, handleInfo } from "../../utils/customToast";
 import { UserConsumer } from "../../context/user-context";
 
-class AddBook extends Component {
+class Book extends Component {
   static amazonService = new AmazonService();
   static bookService = new BookService();
   constructor(props) {
@@ -50,10 +50,48 @@ class AddBook extends Component {
     console.log(this.state);
   };
 
+  handleSubmit = async e => {
+    try {
+      e.preventDefault();
+      let errors = bookValidator(this.state)
+      this.setState(
+        {
+          errors
+        },
+        async () => {
+          if (Object.keys(errors).length === 0) {
+            let result = await Book.bookService.save(this.state);
+            handleInfo(result.message);
+            this.props.history.push('/books/list');
+          }
+        }
+      );
+    } catch (error) {
+      handleError(error.message);
+    }
+  };
+
+  handleReset = () => {
+    this.setState(this.initialState);
+  };
+
+  async componentDidMount() {
+    try {
+      const id = this.props.match.params.id;
+      if (id) {
+        let result = await Book.bookService.get({id});
+        result.book.amazonFetched = true;
+        this.setState(result.book);
+      }
+    } catch (error) {
+      handleError(error.message);
+    }
+  }
+
   retrieveAmazonData = async () => {
     const { amazonUrl } = this.state;
     try {
-      let result = await AddBook.amazonService.info({
+      let result = await Book.amazonService.info({
         amazonUrl
       });
       if (result.success) {
@@ -66,30 +104,6 @@ class AddBook extends Component {
     } catch (error) {
       handleError(error.message);
     }
-  };
-
-  handleSubmit = async e => {
-    try {
-      e.preventDefault();
-      let errors = addBookValidator(this.state);
-      this.setState(
-        {
-          errors
-        },
-        async () => {
-          if (Object.keys(errors).length === 0) {
-            let result = await AddBook.bookService.add(this.state);
-            handleInfo(result.message);
-          }
-        }
-      );
-    } catch (error) {
-      handleError(error.message);
-    }
-  };
-
-  handleReset = () => {
-    this.setState(this.initialState);
   };
 
   render() {
@@ -372,11 +386,11 @@ class AddBook extends Component {
     );
   }
 }
-const AddBookWithContext = props => {
+const BookWithContext = props => {
   return (
     <UserConsumer>
-      {user => <AddBook {...props} userEmail={user.email} />}
+      {user => <Book {...props} userEmail={user.email} />}
     </UserConsumer>
   );
 };
-export default AddBookWithContext;
+export default BookWithContext;
