@@ -16,7 +16,7 @@ import {
 } from "reactstrap";
 import { handleError, handleInfo } from "../../utils/customToast";
 import { UserConsumer } from "../../context/user-context";
-import courseValidator from './../../utils/validations/courseValidator';
+import courseValidator from '../../utils/validations/giveawayValidator';
 import UdemyService from "../../services/udemy-service";
 import CourseService from './../../services/course-service';
 

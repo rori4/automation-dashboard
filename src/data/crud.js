@@ -4,17 +4,16 @@ function request(method) {
     return token && token.length ? { Authorization: `Bearer ${token}` } : {};
   };
 
-  return async (url, data = {}, options = {}) => {
+  return async (url, data = {}, dataType = "json", options = {}) => {
     const authHeader = getAuthHeader();
     let qs = "";
     let body;
+    let headersType = headersResolve(dataType);
     const headers = {
-      "Content-Type": "application/json",
-      Accept: "application/json",
+      ...headersType,
       ...authHeader
     };
-    if (["get", "delete"].indexOf(method) > -1)
-      qs = "?" + getQueryString(data);
+    if (["get", "delete"].indexOf(method) > -1) qs = "?" + getQueryString(data);
     //POST or PUT
     else body = JSON.stringify(data).length ? JSON.stringify(data) : undefined;
     url = url + qs;
@@ -25,9 +24,31 @@ function request(method) {
       ...options
     });
     return response.text().then(function(text) {
-      return text ? JSON.parse(text) : {}
-    })
+      debugger
+      return text ? JSON.parse(text) : {};
+    });
   };
+}
+
+function headersResolve(type) {
+  switch (type) {
+    case "json":
+      return { "Content-Type": "application/json", Accept: "application/json" };
+    case "multipart":
+      return {
+        "Content-Type": "multipart/form-data",
+        Accept: "multipart/form-data"
+      };
+  }
+}
+
+function dataResolve(type, data) {
+  switch (type) {
+    case "json":
+      return JSON.stringify(data).length ? JSON.stringify(data) : undefined;
+    case "multipart":
+      return data;
+  }
 }
 
 function getQueryString(data) {

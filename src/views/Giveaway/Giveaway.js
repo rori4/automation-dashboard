@@ -10,50 +10,54 @@ import {
   Input,
   Label,
   Row,
-  Media,
   Button,
   CardFooter
 } from "reactstrap";
 import { handleError, handleInfo } from "../../utils/customToast";
 import { UserConsumer } from "../../context/user-context";
-import courseValidator from './../../utils/validations/courseValidator';
-
+import giveawayValidator from "./../../utils/validations/giveawayValidator";
+import GiveawayService from "./../../services/giveaway-service";
 class Giveaway extends Component {
+  static giveawayService = new GiveawayService();
   constructor(props) {
     super(props);
     this.initialState = {
-      udemyUrl: "",
+      giveawayUrl: "",
       title: "",
-      price: "",
-      instructorName: "",
-      summary: "",
-      keywords: "",
-      courseCover: "",
-      instructorEmail: props.userEmail,
-      udemyFetched: false,
+      sponsorName: "",
+      description: "",
+      prize: "",
+      giveawayCover: "",
+      eligibility: "US, CA, 18+",
+      prizeValue: "",
+      category: "",
+      entryMethod: "",
+      sponsorEmail: props.userEmail,
       errors: {}
     };
     this.state = this.initialState;
   }
 
   handleChange = ({ target }) => {
-    this.setState({ [target.name]: target.value });
+    target.files
+      ? this.setState({ [target.name]: target.files[0] })
+      : this.setState({ [target.name]: target.value });
     console.log(this.state);
   };
 
   handleSubmit = async e => {
     try {
       e.preventDefault();
-      let errors = courseValidator(this.state);
+      let errors = giveawayValidator(this.state);
       this.setState(
         {
           errors
         },
         async () => {
           if (Object.keys(errors).length === 0) {
-            let result = await Giveaway.courseService.save(this.state);
+            let result = await Giveaway.giveawayService.save(this.state);
             handleInfo(result.message);
-            this.props.history.push('/courses/list');
+            this.props.history.push("/giveaways/list");
           }
         }
       );
@@ -65,31 +69,13 @@ class Giveaway extends Component {
   handleReset = () => {
     this.setState(this.initialState);
   };
-  
-  retrieveUdemyData = async () => {
-    const { udemyUrl } = this.state;
-    try {
-      let result = await Giveaway.udemyService.info({ udemyUrl });
-      if (result.success) {
-        let course = result.course;
-        course.udemyFetched = true;
-        this.setState(course);
-        this.setState({errors: courseValidator(this.state)});
-      } else {
-        handleInfo(result.message);
-      }
-    } catch (error) {
-      handleError(error.message);
-    }
-  };
 
   async componentDidMount() {
     try {
       const id = this.props.match.params.id;
       if (id) {
-        let result = await Giveaway.courseService.get({id});
-        result.course.udemyFetched = true;
-        this.setState(result.course);
+        let result = await Giveaway.giveawayService.get({ id });
+        this.setState(result.giveaway);
       }
     } catch (error) {
       handleError(error.message);
@@ -98,24 +84,26 @@ class Giveaway extends Component {
 
   render() {
     const {
-      udemyUrl,
+      giveawayUrl,
       title,
-      instructorName,
-      keywords,
-      courseCover,
-      price,
-      udemyFetched,
-      instructorEmail,
-      errors,
-      summary
+      sponsorName,
+      description,
+      prize,
+      giveawayCover,
+      eligibility,
+      sponsorEmail,
+      category,
+      entryMethod,
+      prizeValue,
+      errors
     } = this.state;
     return (
       <div className="animated fadeIn">
         <Row>
-          <Col xs="12" md={{ size: 6 }}>
+          <Col xs="12" md={{ size: 6, offset: 3 }}>
             <Card>
               <CardHeader>
-                <strong>Add Udemy Giveaway</strong>
+                <strong>Add/Edit Giveaway</strong>
               </CardHeader>
               <Form
                 onSubmit={this.handleSubmit}
@@ -128,23 +116,23 @@ class Giveaway extends Component {
                 <CardBody>
                   <FormGroup row>
                     <Col md="3">
-                      <Label htmlFor="udemyUrl">Udemy Link</Label>
+                      <Label htmlFor="giveawayUrl">Giveaway Link</Label>
                     </Col>
                     <Col xs="12" md="9">
                       <Input
-                        className={errors.udemyUrl ? "is-invalid" : ""}
+                        className={errors.giveawayUrl ? "is-invalid" : ""}
                         type="text"
-                        id="udemyUrl"
-                        name="udemyUrl"
-                        placeholder="Udemy URL..."
-                        autoComplete="udemy-url"
-                        value={udemyUrl}
+                        id="giveawayUrl"
+                        name="giveawayUrl"
+                        placeholder="URL..."
+                        autoComplete="giveawayUrl"
+                        value={giveawayUrl}
                         onBlur={this.retrieveUdemyData}
                         onChange={this.handleChange}
                       />
-                      <div class="invalid-feedback">{errors.udemyUrl}</div>
+                      <div class="invalid-feedback">{errors.giveawayUrl}</div>
                       <FormText color="muted">
-                        Place your Udemy course link here
+                        Place your giveaway url here
                       </FormText>
                     </Col>
                   </FormGroup>
@@ -166,98 +154,202 @@ class Giveaway extends Component {
                       />
                       <div class="invalid-feedback">{errors.title}</div>
                       <FormText className="help-block">
-                        Please enter/edit your course title
+                        Please enter/edit your giveaway title
                       </FormText>
                     </Col>
                   </FormGroup>
                   <FormGroup row>
                     <Col md="3">
-                      <Label htmlFor="summary">Summary</Label>
+                      <Label htmlFor="description">Description</Label>
                     </Col>
                     <Col xs="12" md="9">
                       <Input
-                        className={errors.summary ? "is-invalid" : ""}
+                        className={errors.description ? "is-invalid" : ""}
                         type="textarea"
-                        name="summary"
-                        id="summary"
+                        name="description"
+                        id="description"
                         rows="9"
-                        placeholder="Summary..."
-                        value={summary}
+                        placeholder="description..."
+                        value={description}
                         onBlur={this.handleBlur}
                         onChange={this.handleChange}
                       />
-                      <div class="invalid-feedback">{errors.summary}</div>
+                      <div class="invalid-feedback">{errors.description}</div>
                       <FormText className="help-block">
-                        Please enter/edit your course summary
+                        Please enter/edit your giveaway description
                       </FormText>
                     </Col>
                   </FormGroup>
                   <FormGroup row>
                     <Col md="3">
-                      <Label htmlFor="instructorName">Instructor Name</Label>
+                      <Label htmlFor="sponsorName">Sponsor Name</Label>
                     </Col>
                     <Col xs="12" md="9">
                       <Input
-                        className={errors.instructorName ? "is-invalid" : ""}
+                        className={errors.sponsorName ? "is-invalid" : ""}
                         type="text"
-                        id="instructorName"
-                        name="instructorName"
-                        placeholder="Instructor Name..."
-                        autoComplete="instructor-name"
-                        value={instructorName}
+                        id="sponsorName"
+                        name="sponsorName"
+                        placeholder="Sponsor Name..."
+                        autoComplete="sponsor-name"
+                        value={sponsorName}
                         onBlur={this.handleBlur}
                         onChange={this.handleChange}
                       />
-                      <div class="invalid-feedback">
-                        {errors.instructorName}
-                      </div>
+                      <div class="invalid-feedback">{errors.sponsorName}</div>
                       <FormText className="help-block">
-                        Please enter/edit your instructor name
+                        Please enter/edit your sponsor name
                       </FormText>
                     </Col>
                   </FormGroup>
                   <FormGroup row>
                     <Col md="3">
-                      <Label htmlFor="keywords">Keywords</Label>
+                      <Label htmlFor="prize">Prize</Label>
                     </Col>
                     <Col xs="12" md="9">
                       <Input
-                        className={errors.keywords ? "is-invalid" : ""}
+                        className={errors.prize ? "is-invalid" : ""}
                         type="text"
-                        id="keywords"
-                        name="keywords"
-                        placeholder="Keywords..."
-                        autoComplete="keywords"
-                        value={keywords}
+                        id="prize"
+                        name="prize"
+                        placeholder="What is the prize?..."
+                        autoComplete="prize"
+                        value={prize}
                         onBlur={this.handleBlur}
                         onChange={this.handleChange}
                       />
-                      <div class="invalid-feedback">{errors.keywords}</div>
+                      <div class="invalid-feedback">{errors.prize}</div>
                       <FormText className="help-block">
-                        Please add your course keywords separated by comma
+                        Please add the name of your prize here
                       </FormText>
                     </Col>
                   </FormGroup>
                   <FormGroup row>
                     <Col md="3">
-                      <Label htmlFor="instructorEmail">Instructor Email</Label>
+                      <Label htmlFor="giveawayCover">Giveaway cover</Label>
                     </Col>
                     <Col xs="12" md="9">
                       <Input
-                        className={errors.instructorEmail ? "is-invalid" : ""}
+                        className={errors.giveawayCover ? "is-invalid" : ""}
+                        type="file"
+                        id="giveawayCover"
+                        name="giveawayCover"
+                        onChange={this.handleChange}
+                      />
+                      <div class="invalid-feedback">{errors.giveawayCover}</div>
+                      <FormText className="help-block">
+                        Please add a giveaway cover
+                      </FormText>
+                    </Col>
+                  </FormGroup>
+                  <FormGroup row>
+                    <Col md="3">
+                      <Label htmlFor="sponsorEmail">Sponsor Email</Label>
+                    </Col>
+                    <Col xs="12" md="9">
+                      <Input
+                        className={errors.sponsorEmail ? "is-invalid" : ""}
                         type="email"
-                        id="instructorEmail"
-                        name="instructorEmail"
-                        placeholder="Instructor Email..."
+                        id="sponsorEmail"
+                        name="sponsorEmail"
+                        placeholder="Sponsor Email..."
                         autoComplete="email"
-                        value={instructorEmail}
+                        value={sponsorEmail}
                         onChange={this.handleChange}
                       />
-                      <div class="invalid-feedback">
-                        {errors.instructorEmail}
-                      </div>
+                      <div class="invalid-feedback">{errors.sponsorEmail}</div>
                       <FormText className="help-block">
                         Please enter/edit your email
+                      </FormText>
+                    </Col>
+                  </FormGroup>
+                  <FormGroup row>
+                    <Col md="3">
+                      <Label htmlFor="prizeValue">Prize Value</Label>
+                    </Col>
+                    <Col xs="12" md="9">
+                      <Input
+                        className={errors.prizeValue ? "is-invalid" : ""}
+                        type="number"
+                        id="prizeValue"
+                        name="prizeValue"
+                        placeholder="Prize value..."
+                        autoComplete="email"
+                        value={prizeValue}
+                        onChange={this.handleChange}
+                      />
+                      <div class="invalid-feedback">{errors.prizeValue}</div>
+                      <FormText className="help-block">
+                        Please enter the prize value of your giveaway
+                      </FormText>
+                    </Col>
+                  </FormGroup>
+                  <FormGroup row>
+                    <Col md="3">
+                      <Label htmlFor="eligibility">Eligibility</Label>
+                    </Col>
+                    <Col xs="12" md="9">
+                      <Input
+                        className={errors.eligibility ? "is-invalid" : ""}
+                        type="text"
+                        id="eligibility"
+                        name="eligibility"
+                        placeholder="Eligibility..."
+                        autoComplete="eligibility"
+                        value={eligibility}
+                        onChange={this.handleChange}
+                      />
+                      <div class="invalid-feedback">{errors.eligibility}</div>
+                      <FormText className="help-block">
+                        Please state who is eligibile to enter (e.g US, CA, 18+)
+                      </FormText>
+                    </Col>
+                  </FormGroup>
+                  <FormGroup row>
+                    <Col md="3">
+                      <Label htmlFor="category">Category</Label>
+                    </Col>
+                    <Col xs="12" md="9">
+                      <Input
+                        className={errors.category ? "is-invalid" : ""}
+                        type="select"
+                        name="category"
+                        id="category"
+                        onChange={this.handleChange}
+                        value={category}
+                      >
+                        <option value="0">Please select</option>
+                        <option value="technology">Technology</option>
+                        <option value="entertainment">Entertainment</option>
+                        <option value="beauty">Beauty</option>
+                      </Input>
+                      <div class="invalid-feedback">{errors.category}</div>
+                      <FormText className="help-block">
+                        Please select a giveaway category
+                      </FormText>
+                    </Col>
+                  </FormGroup>
+                  <FormGroup row>
+                    <Col md="3">
+                      <Label htmlFor="entryMethod">Entry Method</Label>
+                    </Col>
+                    <Col xs="12" md="9">
+                      <Input
+                        className={errors.entryMethod ? "is-invalid" : ""}
+                        type="select"
+                        name="entryMethod"
+                        id="entryMethod"
+                        onChange={this.handleChange}
+                        value={entryMethod}
+                      >
+                        <option>Please select</option>
+                        <option value="gleamio">Gleam.io</option>
+                        <option value="rafflecopter">Rafflecopter</option>
+                        <option value="viralsweep">Viralsweep</option>
+                      </Input>
+                      <div class="invalid-feedback">{errors.entryMethod}</div>
+                      <FormText className="help-block">
+                        Please select the entry method
                       </FormText>
                     </Col>
                   </FormGroup>
@@ -282,46 +374,6 @@ class Giveaway extends Component {
                 </CardFooter>
               </Form>
             </Card>
-          </Col>
-          <Col>
-            <Row>
-              <Col xs="12" md="12" lg="6">
-                <Card color="warning">
-                  <CardBody>
-                    <div className="h4 m-0">{udemyFetched ? price : "-"}</div>
-                    <div>Giveaway Price</div>
-                  </CardBody>
-                </Card>
-                <Card color="danger">
-                  <CardBody>
-                    <div className="h4 m-0">{udemyFetched ? title : "-"}</div>
-                    <div>Giveaway Title</div>
-                  </CardBody>
-                </Card>
-                <Card color="info">
-                  <CardBody>
-                    <div className="h4 m-0">
-                      {udemyFetched ? instructorName : "-"}
-                    </div>
-                    <div>Instructor Name</div>
-                  </CardBody>
-                </Card>
-              </Col>
-              <Col xs="12" md="12" lg="6">
-                <Card>
-                  <CardBody>
-                    <Media
-                      className="col-12"
-                      src={
-                        udemyFetched
-                          ? courseCover
-                          : "../assets/img/no-image.png"
-                      }
-                    />
-                  </CardBody>
-                </Card>
-              </Col>
-            </Row>
           </Col>
         </Row>
       </div>

@@ -35,3 +35,4 @@ function courseValidator(state) {
 }
 
 export default courseValidator;
+

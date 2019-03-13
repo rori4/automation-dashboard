@@ -151,9 +151,15 @@ class CourseList extends Component {
                               </div>
                             </td>
                             <td>
-                              <Badge color="secondary">{item.keywords}</Badge>
+                              {item.keywords.split(",").map((keyword, id) => (
+                                <Badge color="secondary m-1">
+                                  {keyword.trim()}
+                                </Badge>
+                              ))}
                             </td>
-                            <td className="text-center">{item.instructorEmail}</td>
+                            <td className="text-center">
+                              {item.instructorEmail}
+                            </td>
                             <td>
                               <a
                                 class="btn btn-warning mr-2 mb-2"

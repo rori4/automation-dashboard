@@ -19,7 +19,7 @@ import Iframe from "react-iframe";
 import numeral from "numeral";
 import bookValidator from "../../utils/validations/bookValidator";
 import AmazonService from "../../services/amazon-service";
-import BookService from "../../services/course-service";
+import BookService from "../../services/book-service";
 import { handleError, handleInfo } from "../../utils/customToast";
 import { UserConsumer } from "../../context/user-context";
 
@@ -81,6 +81,7 @@ class Book extends Component {
       if (id) {
         let result = await Book.bookService.get({id});
         result.book.amazonFetched = true;
+        result.book.salesRank = result.book.rankHistory[0].rank;
         this.setState(result.book);
       }
     } catch (error) {
