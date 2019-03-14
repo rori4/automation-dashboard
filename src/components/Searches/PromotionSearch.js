@@ -1,4 +1,4 @@
-import React, { Component, lazy, Suspense, Fragment } from "react";
+import React, { Component, Fragment } from "react";
 import {
   Button,
   Card,
@@ -14,20 +14,18 @@ import {
   InputGroupText
 } from "reactstrap";
 import SweetAlert from "sweetalert-react";
-import BookService from "../../services/book-service";
+import Moment from "react-moment";
 import { handleError, handleInfo } from "./../../utils/customToast";
 import { getStyle } from "@coreui/coreui/dist/js/coreui-utilities";
-import Moment from 'react-moment';
 
 const brandDanger = getStyle("--danger");
 
-class BookList extends Component {
-  static bookService = new BookService();
+class PromotionSearch extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      books: [],
+      data: [],
       search: "",
       showDelete: false,
       deleteItemId: "",
@@ -42,20 +40,21 @@ class BookList extends Component {
 
   handleChange = async ({ target }) => {
     this.setState({ [target.name]: target.value });
-    this.retreiveBooks();
+    this.retrieveData();
     console.log(this.state);
   };
 
   confirmDeleteDialog = async () => {
     const { deleteItemId } = this.state;
+    const { service } = this.props;
     try {
-      let result = await BookList.bookService.delete({ id: deleteItemId });
+      let result = await service.delete({ id: deleteItemId });
       result.success ? handleInfo(result.message) : handleError(result.message);
     } catch (error) {
       handleError(error.message);
     }
     this.hideDialog();
-    this.retreiveBooks();
+    this.retrieveData();
   };
 
   cancelDeleteDialog = () => {
@@ -67,16 +66,17 @@ class BookList extends Component {
   };
 
   componentDidMount() {
-    this.retreiveBooks();
+    this.retrieveData();
   }
 
-  async retreiveBooks() {
+  async retrieveData() {
     const { search } = this.state;
+    const { service } = this.props;
     try {
-      let result = await BookList.bookService.list({ search });
+      let result = await service.list({ search });
       if (result.success) {
         this.setState({
-          books: result.data,
+          data: result.data,
           isLoading: false
         });
       } else {
@@ -88,7 +88,8 @@ class BookList extends Component {
   }
 
   render() {
-    const { isLoading, books, showDelete, deleteItemTitle } = this.state;
+    const { isLoading, data, showDelete, deleteItemTitle } = this.state;
+    const { headerText, type } = this.props;
     return (
       <div className="animated fadeIn">
         <Row>
@@ -114,7 +115,7 @@ class BookList extends Component {
         <Row>
           <Col>
             <Card>
-              <CardHeader>My Kindle Books</CardHeader>
+              <CardHeader>{headerText}</CardHeader>
               <CardBody>
                 <Table
                   hover
@@ -125,9 +126,9 @@ class BookList extends Component {
                     <tr>
                       <th className="text-center">Image</th>
                       <th className="text-center">Title</th>
-                      <th>Keywords</th>
-                      <th className="text-center">Author Email</th>
-                      <th>Activity</th>
+                      <th>Promotion Period</th>
+                      <th className="text-center">Status</th>
+                      <th>Actions</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -135,56 +136,59 @@ class BookList extends Component {
                       this.loading
                     ) : (
                       <Fragment>
-                        {books.map((item, key) => (
+                        {data.map((item, key) => (
                           <tr key={key}>
                             <td className="text-center">
                               <div className="book-list">
                                 <img
-                                  src={item.cover}
+                                  src={item[type]["cover"]}
                                   className="img-book"
                                 />
                               </div>
                             </td>
                             <td>
-                              <div>{item.title}</div>
+                              <div>{item[type]["title"]}</div>
                               <div className="small text-muted">
-                                Created On: <Moment format="LL">{item.createdOn}</Moment>
+                                <span>New</span> | Registered: Jan 1, 2015
                               </div>
                             </td>
                             <td>
-                              {item.keywords.split(",").map((keyword, id) => (
-                                <Badge color="secondary m-1">
-                                  {keyword.trim()}
-                                </Badge>
-                              ))}
+                              from{" "}
+                              <Badge color="warning">
+                                <Moment format="LL">
+                                  {item.startDate}
+                                </Moment>
+                              </Badge>{" "}
+                              to{" "}
+                              <Badge color="warning">
+                                <Moment format="LL">
+                                  {item.endDate}
+                                </Moment>
+                              </Badge>
                             </td>
-                            <td className="text-center">{item.authorEmail}</td>
+                            <td className="text-center">
+                              <Badge color="primary m-1">{item.status}</Badge>
+                            </td>
                             <td>
-                              <a
-                                class="btn btn-warning mr-2 mb-2"
-                                href={"/books/stats/" + item._id}
-                              >
-                                <i class="fa fa-area-chart" />
-                              </a>
-                              <a
-                                class="btn btn-warning mr-2 mb-2"
-                                href={"/books/promote/" + item._id}
-                              >
-                                <i class="fa fa-flash" />
-                              </a>
-                              <a
+                              {/* <a
                                 class="btn btn-success mr-2 mb-2"
-                                href={"/books/edit/" + item._id}
+                                href={
+                                  "/promote/edit/" +
+                                  item[type]["_id"] +
+                                  "/" +
+                                  item._id
+                                }
                               >
                                 <i class="fa fa-pencil" />
-                              </a>
+                              </a> */}
                               <a
                                 class="btn btn-danger mr-2 mb-2"
                                 onClick={() =>
                                   this.setState({
                                     showDelete: true,
                                     deleteItemId: item._id,
-                                    deleteItemTitle: item.title
+                                    deleteItemTitle:
+                                      item[type]["title"] + "'s promotion"
                                   })
                                 }
                                 href="#"
@@ -218,4 +222,4 @@ class BookList extends Component {
   }
 }
 
-export default BookList;
+export default PromotionSearch;

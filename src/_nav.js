@@ -1,79 +1,80 @@
 export default {
   items: [
     {
-      name: 'Home',
-      url: '/dashboard',
-      icon: 'icon-speedometer',
+      name: "Home",
+      url: "/dashboard",
+      icon: "icon-speedometer"
     },
     {
       title: true,
-      name: 'Amazon Publishing Suite',
-      wrapper: {            // optional wrapper object
-        element: '',        // required valid HTML5 element tag
-        attributes: {}        // optional valid JS object with JS API naming ex: { className: "my-class", style: { fontFamily: "Verdana" }, id: "my-id"}
-      },
-      class: ''             // optional class names space delimited list for title item ex: "text-center"
-    },
-    {
-      name: 'Book List',
-      url: '/books/list',
-      icon: 'icon-list',
-    },
-    {
-      name: 'Add Book',
-      url: '/books/add',
-      icon: 'icon-notebook',
-    },
-    {
-      name: 'Book Promotion',
-      url: '/books/promote',
-      icon: 'icon-energy',
-    },
-    {
-      title: true,
-      name: 'Udemy Publishing Suite',
+      name: "Amazon Publishing Suite",
       wrapper: {
-        element: '',
-        attributes: {},
+        // optional wrapper object
+        element: "", // required valid HTML5 element tag
+        attributes: {} // optional valid JS object with JS API naming ex: { className: "my-class", style: { fontFamily: "Verdana" }, id: "my-id"}
       },
+      class: "" // optional class names space delimited list for title item ex: "text-center"
     },
     {
-      name: 'Course List',
-      url: '/courses/list',
-      icon: 'icon-list',
+      name: "Add Book",
+      url: "/books/add",
+      icon: "icon-notebook"
     },
     {
-      name: 'Add Course',
-      url: '/courses/add',
-      icon: 'icon-camrecorder',
+      name: "Book List",
+      url: "/books/list",
+      icon: "icon-list"
     },
     {
-      name: 'Course Promotion',
-      url: '/courses/promote',
-      icon: 'icon-energy',
+      name: "Book Promotion",
+      url: "/books/promote",
+      icon: "icon-energy"
     },
     {
       title: true,
-      name: 'Giveaway Publishing Suite',
+      name: "Udemy Publishing Suite",
       wrapper: {
-        element: '',
-        attributes: {},
-      },
+        element: "",
+        attributes: {}
+      }
     },
     {
-      name: 'Giveaway List',
-      url: '/giveaways/list',
-      icon: 'icon-list',
+      name: "Add Course",
+      url: "/courses/add",
+      icon: "icon-camrecorder"
     },
     {
-      name: 'Add Giveaway',
-      url: '/giveaways/add',
-      icon: 'icon-present',
+      name: "Course List",
+      url: "/courses/list",
+      icon: "icon-list"
     },
     {
-      name: 'Giveaway Promotion',
-      url: '/giveaways/promote',
-      icon: 'icon-energy',
+      name: "Course Promotion",
+      url: "/courses/promote",
+      icon: "icon-energy"
+    },
+    {
+      title: true,
+      name: "Giveaway Publishing Suite",
+      wrapper: {
+        element: "",
+        attributes: {}
+      }
+    },
+    {
+      name: "Add Giveaway",
+      url: "/giveaways/add",
+      icon: "icon-present"
+    },
+    {
+      name: "Giveaway List",
+      url: "/giveaways/list",
+      icon: "icon-list"
+    },
+    {
+      name: "Giveaway Promotion",
+      url: "/giveaways/promote",
+      icon: "icon-energy"
     }
-  ],
+  ]
 };

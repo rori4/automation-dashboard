@@ -1,11 +1,9 @@
 import { decamelize } from '../stringUtil';
 
-function giveawayValidator(state) {
-  delete state.promotions
+function requiredValidation(state) {
   let errors = {};
   for (var key in state) {
     if (state.hasOwnProperty(key)) {
-      console.log(key + " -> " + state[key]);
       state[key] === undefined || state[key] === "" || state[key].length === 0
         ? (errors[key] = decamelize(key , " ") + " is required")
         : delete errors[key];
@@ -14,4 +12,4 @@ function giveawayValidator(state) {
   return errors;
 }
 
-export default giveawayValidator;
+export default requiredValidation;

@@ -13,19 +13,20 @@ import {
   InputGroupAddon,
   InputGroupText
 } from "reactstrap";
+import Moment from 'react-moment';
 import SweetAlert from "sweetalert-react";
-import CourseService from "../../services/course-service";
 import { handleError, handleInfo } from "./../../utils/customToast";
 import { getStyle } from "@coreui/coreui/dist/js/coreui-utilities";
+import GiveawayService from './../../services/giveaway-service';
 
 const brandDanger = getStyle("--danger");
 
-class CourseList extends Component {
-  static courseService = new CourseService();
+class GiveawayList extends Component {
+  static giveawayService = new GiveawayService();
   constructor(props) {
     super(props);
     this.state = {
-      courses: [],
+      giveaways: [],
       search: "",
       showDelete: false,
       deleteItemId: "",
@@ -40,20 +41,20 @@ class CourseList extends Component {
 
   handleChange = async ({ target }) => {
     this.setState({ [target.name]: target.value });
-    this.retreiveCourses();
+    this.retreiveGiveaways();
     console.log(this.state);
   };
 
   confirmDeleteDialog = async () => {
     const { deleteItemId } = this.state;
     try {
-      let result = await CourseList.courseService.delete({ id: deleteItemId });
+      let result = await GiveawayList.giveawayService.delete({ id: deleteItemId });
       result.success ? handleInfo(result.message) : handleError(result.message);
     } catch (error) {
       handleError(error.message);
     }
     this.hideDialog();
-    this.retreiveCourses();
+    this.retreiveGiveaways();
   };
 
   cancelDeleteDialog = () => {
@@ -65,13 +66,20 @@ class CourseList extends Component {
   };
 
   componentDidMount() {
-    this.retreiveCourses();
+    this.retreiveGiveaways();
   }
 
-  async retreiveCourses() {
+  truncate(string, size){
+    if (string.length > size)
+       return string.substring(0,size)+'...';
+    else
+       return string;
+ };
+
+  async retreiveGiveaways() {
     const { search } = this.state;
     try {
-      let result = await CourseList.courseService.list({ search });
+      let result = await GiveawayList.giveawayService.list({ search });
       if (result.success) {
         this.setState({
           courses: result.data,
@@ -123,8 +131,8 @@ class CourseList extends Component {
                     <tr>
                       <th className="text-center">Image</th>
                       <th className="text-center">Title</th>
-                      <th>Keywords</th>
-                      <th className="text-center">Instructor Email</th>
+                      <th>Description</th>
+                      <th className="text-center">Sponsor Email</th>
                       <th>Activity</th>
                     </tr>
                   </thead>
@@ -138,7 +146,7 @@ class CourseList extends Component {
                             <td className="text-center">
                               <div className="course-list">
                                 <img
-                                  src={item.courseCover}
+                                  src={item.cover}
                                   className="img-course"
                                 />
                               </div>
@@ -147,29 +155,25 @@ class CourseList extends Component {
                               <div>{item.title}</div>
                               {/* TODO: Add date created */}
                               <div className="small text-muted">
-                                <span>New</span> | Registered: Jan 1, 2015
+                              Created On: <Moment format="LL">{item.createdOn}</Moment>
                               </div>
                             </td>
                             <td>
-                              {item.keywords.split(",").map((keyword, id) => (
-                                <Badge color="secondary m-1">
-                                  {keyword.trim()}
-                                </Badge>
-                              ))}
+                              {this.truncate(item.description,150)}
                             </td>
                             <td className="text-center">
-                              {item.instructorEmail}
+                              {item.sponsorEmail}
                             </td>
                             <td>
                               <a
                                 class="btn btn-warning mr-2 mb-2"
-                                href={"/courses/promote/" + item._id}
+                                href={"/giveaways/promote/" + item._id}
                               >
                                 <i class="fa fa-flash" />
                               </a>
                               <a
                                 class="btn btn-success mr-2 mb-2"
-                                href={"/courses/edit/" + item._id}
+                                href={"/giveaways/edit/" + item._id}
                               >
                                 <i class="fa fa-pencil" />
                               </a>
@@ -213,4 +217,4 @@ class CourseList extends Component {
   }
 }
 
-export default CourseList;
+export default GiveawayList;

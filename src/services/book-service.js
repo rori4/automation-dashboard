@@ -7,6 +7,7 @@ class BookService {
     this.deleteUrl = `${this.baseUrl}/delete`;
     this.getUrl = `${this.baseUrl}/get`;
     this.listUrl = `${this.baseUrl}/list`;
+    this.getPromotionId =  `${this.baseUrl}/promotion`;
   }
 
   save(book) {

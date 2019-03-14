@@ -27,7 +27,7 @@ class Giveaway extends Component {
       sponsorName: "",
       description: "",
       prize: "",
-      giveawayCover: "",
+      cover: "",
       eligibility: "US, CA, 18+",
       prizeValue: "",
       category: "",
@@ -40,7 +40,9 @@ class Giveaway extends Component {
 
   handleChange = ({ target }) => {
     target.files
-      ? this.setState({ [target.name]: target.files[0] })
+      ? this.setState({
+          [target.name]: target.files[0]
+        })
       : this.setState({ [target.name]: target.value });
     console.log(this.state);
   };
@@ -82,6 +84,16 @@ class Giveaway extends Component {
     }
   }
 
+  getCoverPreview() {
+    const { cover } = this.state;
+    var isFile = typeof cover.name == "string";
+    if (isFile)
+      return cover !== "" ? URL.createObjectURL(cover) : "";
+    else {
+      return cover
+    }
+  }
+
   render() {
     const {
       giveawayUrl,
@@ -89,7 +101,7 @@ class Giveaway extends Component {
       sponsorName,
       description,
       prize,
-      giveawayCover,
+      cover,
       eligibility,
       sponsorEmail,
       category,
@@ -226,17 +238,23 @@ class Giveaway extends Component {
                   </FormGroup>
                   <FormGroup row>
                     <Col md="3">
-                      <Label htmlFor="giveawayCover">Giveaway cover</Label>
+                      <Label htmlFor="cover">Giveaway cover</Label>
                     </Col>
                     <Col xs="12" md="9">
+                      {cover ? (
+                        <img
+                          src={this.getCoverPreview()}
+                          className="img-thumbnail mb-3"
+                        />
+                      ) : null}
                       <Input
-                        className={errors.giveawayCover ? "is-invalid" : ""}
+                        className={errors.cover ? "is-invalid" : ""}
                         type="file"
-                        id="giveawayCover"
-                        name="giveawayCover"
+                        id="cover"
+                        name="cover"
                         onChange={this.handleChange}
                       />
-                      <div class="invalid-feedback">{errors.giveawayCover}</div>
+                      <div class="invalid-feedback">{errors.cover}</div>
                       <FormText className="help-block">
                         Please add a giveaway cover
                       </FormText>

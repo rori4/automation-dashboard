@@ -32,7 +32,7 @@ class Course extends Component {
       instructorName: "",
       summary: "",
       keywords: "",
-      courseCover: "",
+      cover: "",
       instructorEmail: props.userEmail,
       udemyFetched: false,
       errors: {}
@@ -106,7 +106,7 @@ class Course extends Component {
       title,
       instructorName,
       keywords,
-      courseCover,
+      cover,
       price,
       udemyFetched,
       instructorEmail,
@@ -318,7 +318,7 @@ class Course extends Component {
                       className="col-12"
                       src={
                         udemyFetched
-                          ? courseCover
+                          ? cover
                           : "../assets/img/no-image.png"
                       }
                     />

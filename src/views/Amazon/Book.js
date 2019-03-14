@@ -35,7 +35,7 @@ class Book extends Component {
       synopsis: "",
       authorBio: "",
       keywords: "",
-      bookCover: "",
+      cover: "",
       salesRank: "",
       reviewsIframe: "",
       authorEmail: this.props.userEmail,
@@ -115,7 +115,7 @@ class Book extends Component {
       synopsis,
       authorBio,
       keywords,
-      bookCover,
+      cover,
       amazonFetched,
       authorEmail,
       salesRank,
@@ -351,7 +351,7 @@ class Book extends Component {
                     <Media
                       className="col-12"
                       src={
-                        amazonFetched ? bookCover : "../assets/img/no-image.png"
+                        amazonFetched ? cover : "../assets/img/no-image.png"
                       }
                     />
                   </CardBody>

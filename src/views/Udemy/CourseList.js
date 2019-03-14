@@ -13,6 +13,7 @@ import {
   InputGroupAddon,
   InputGroupText
 } from "reactstrap";
+import Moment from 'react-moment';
 import SweetAlert from "sweetalert-react";
 import CourseService from "../../services/course-service";
 import { handleError, handleInfo } from "./../../utils/customToast";
@@ -138,7 +139,7 @@ class CourseList extends Component {
                             <td className="text-center">
                               <div className="course-list">
                                 <img
-                                  src={item.courseCover}
+                                  src={item.cover}
                                   className="img-course"
                                 />
                               </div>
@@ -147,7 +148,7 @@ class CourseList extends Component {
                               <div>{item.title}</div>
                               {/* TODO: Add date created */}
                               <div className="small text-muted">
-                                <span>New</span> | Registered: Jan 1, 2015
+                              Created On: <Moment format="LL">{item.createdOn}</Moment>
                               </div>
                             </td>
                             <td>
