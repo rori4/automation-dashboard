@@ -19,10 +19,13 @@ const GiveawayPromotionSubmit = React.lazy(() => import('./views/Giveaway/Giveaw
 const GiveawayPromotionSearch = React.lazy(() => import('./views/Giveaway/GiveawayPromotionSearch'));
 
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
-const routes = [
+const publicRoutes = [
   { path: '/', exact: true, name: 'Home', component: DefaultLayout },
   { path: '/dashboard', name: 'Dashboard', component: Dashboard },
-//BOOK SECTION PATHS
+];
+
+const privateRoutes = [
+  //BOOK SECTION PATHS
   { path: '/books/add', name: 'Add Kindle Book', component: Book },
   { path: '/books/edit/:id', name: 'Edit Kindle Book', component: Book },
   { path: '/books/list', name: 'My Kindle Books', component: BookList },
@@ -42,4 +45,10 @@ const routes = [
   { path: '/giveaways/promote', name: 'My Giveaway Promotions', component: GiveawayPromotionSearch },
 ];
 
-export default routes;
+const adminRoutes = [
+  { path: '/admin/users', name: 'EditUsers', component: Book },
+]
+
+const allRoutes = publicRoutes.concat(privateRoutes).concat(adminRoutes);
+
+export { publicRoutes, privateRoutes, adminRoutes, allRoutes}

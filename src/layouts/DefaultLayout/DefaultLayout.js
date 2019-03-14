@@ -17,9 +17,15 @@ import {
 // sidebar nav config
 import navigation from "../../_nav";
 // routes config
-import routes from "../../routes";
+import {
+  publicRoutes,
+  privateRoutes,
+  adminRoutes,
+  allRoutes
+} from "../../routes";
+import AuthorizedRouteWithContext from "./../../components/Routes/AuthorizedRoute";
 
-const DefaultAside = React.lazy(() => import("./DefaultAside"));
+// const DefaultAside = React.lazy(() => import("./DefaultAside"));
 const DefaultFooter = React.lazy(() => import("./DefaultFooter"));
 const DefaultHeader = React.lazy(() => import("./DefaultHeader"));
 const AnonymousHeader = React.lazy(() => import("./AnonymousHeader"));
@@ -67,13 +73,36 @@ class DefaultLayout extends Component {
             </AppSidebar>
           ) : null}
           <main className="main">
-            <AppBreadcrumb appRoutes={routes}/>
+            <AppBreadcrumb appRoutes={allRoutes} />
             <Container fluid>
               <Suspense fallback={this.loading()}>
                 <Switch>
-                  {routes.map((route, idx) => {
+                  {publicRoutes.map((route, idx) => {
                     return route.component ? (
                       <Route
+                        key={idx}
+                        path={route.path}
+                        exact={route.exact}
+                        name={route.name}
+                        render={props => <route.component {...props} />}
+                      />
+                    ) : null;
+                  })}
+                  {privateRoutes.map((route, idx) => {
+                    return route.component ? (
+                      <AuthorizedRouteWithContext
+                        key={idx}
+                        path={route.path}
+                        exact={route.exact}
+                        name={route.name}
+                        render={props => <route.component {...props} />}
+                      />
+                    ) : null;
+                  })}
+                  {adminRoutes.map((route, idx) => {
+                    return route.component ? (
+                      <AuthorizedRouteWithContext
+                        allowedRoles={["Admin"]}
                         key={idx}
                         path={route.path}
                         exact={route.exact}
@@ -87,11 +116,11 @@ class DefaultLayout extends Component {
               </Suspense>
             </Container>
           </main>
-          <AppAside fixed>
+          {/* <AppAside fixed>
             <Suspense fallback={this.loading()}>
               <DefaultAside />
             </Suspense>
-          </AppAside>
+          </AppAside> */}
         </div>
         <AppFooter>
           <Suspense fallback={this.loading()}>
