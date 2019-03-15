@@ -22,7 +22,7 @@ class Giveaway extends Component {
   constructor(props) {
     super(props);
     this.initialState = {
-      giveawayUrl: "",
+      url: "",
       title: "",
       sponsorName: "",
       description: "",
@@ -32,7 +32,7 @@ class Giveaway extends Component {
       prizeValue: "",
       category: "",
       entryMethod: "",
-      sponsorEmail: props.userEmail,
+      email: props.userEmail,
       errors: {}
     };
     this.state = this.initialState;
@@ -96,14 +96,14 @@ class Giveaway extends Component {
 
   render() {
     const {
-      giveawayUrl,
+      url,
       title,
       sponsorName,
       description,
       prize,
       cover,
       eligibility,
-      sponsorEmail,
+      email,
       category,
       entryMethod,
       prizeValue,
@@ -128,21 +128,21 @@ class Giveaway extends Component {
                 <CardBody>
                   <FormGroup row>
                     <Col md="3">
-                      <Label htmlFor="giveawayUrl">Giveaway Link</Label>
+                      <Label htmlFor="url">Giveaway Link</Label>
                     </Col>
                     <Col xs="12" md="9">
                       <Input
-                        className={errors.giveawayUrl ? "is-invalid" : ""}
+                        className={errors.url ? "is-invalid" : ""}
                         type="text"
-                        id="giveawayUrl"
-                        name="giveawayUrl"
+                        id="url"
+                        name="url"
                         placeholder="URL..."
-                        autoComplete="giveawayUrl"
-                        value={giveawayUrl}
+                        autoComplete="url"
+                        value={url}
                         onBlur={this.retrieveUdemyData}
                         onChange={this.handleChange}
                       />
-                      <div class="invalid-feedback">{errors.giveawayUrl}</div>
+                      <div class="invalid-feedback">{errors.url}</div>
                       <FormText color="muted">
                         Place your giveaway url here
                       </FormText>
@@ -262,20 +262,20 @@ class Giveaway extends Component {
                   </FormGroup>
                   <FormGroup row>
                     <Col md="3">
-                      <Label htmlFor="sponsorEmail">Sponsor Email</Label>
+                      <Label htmlFor="email">Sponsor Email</Label>
                     </Col>
                     <Col xs="12" md="9">
                       <Input
-                        className={errors.sponsorEmail ? "is-invalid" : ""}
+                        className={errors.email ? "is-invalid" : ""}
                         type="email"
-                        id="sponsorEmail"
-                        name="sponsorEmail"
+                        id="email"
+                        name="email"
                         placeholder="Sponsor Email..."
                         autoComplete="email"
-                        value={sponsorEmail}
+                        value={email}
                         onChange={this.handleChange}
                       />
-                      <div class="invalid-feedback">{errors.sponsorEmail}</div>
+                      <div class="invalid-feedback">{errors.email}</div>
                       <FormText className="help-block">
                         Please enter/edit your email
                       </FormText>

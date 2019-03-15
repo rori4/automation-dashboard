@@ -29,7 +29,7 @@ class Book extends Component {
   constructor(props) {
     super(props);
     this.initialState = {
-      amazonUrl: "",
+      url: "",
       title: "",
       authorName: "",
       synopsis: "",
@@ -38,7 +38,7 @@ class Book extends Component {
       cover: "",
       salesRank: "",
       reviewsIframe: "",
-      authorEmail: this.props.userEmail,
+      email: this.props.userEmail,
       amazonFetched: false,
       errors: {}
     };
@@ -90,10 +90,10 @@ class Book extends Component {
   }
 
   retrieveAmazonData = async () => {
-    const { amazonUrl } = this.state;
+    const { url } = this.state;
     try {
       let result = await Book.amazonService.info({
-        amazonUrl
+        url
       });
       if (result.success) {
         let book = result.bookInfo;
@@ -109,7 +109,7 @@ class Book extends Component {
 
   render() {
     const {
-      amazonUrl,
+      url,
       title,
       authorName,
       synopsis,
@@ -117,7 +117,7 @@ class Book extends Component {
       keywords,
       cover,
       amazonFetched,
-      authorEmail,
+      email,
       salesRank,
       reviewsIframe,
       errors
@@ -141,21 +141,21 @@ class Book extends Component {
                 <CardBody>
                   <FormGroup row>
                     <Col md="3">
-                      <Label htmlFor="amazonUrl">Amazon Link</Label>
+                      <Label htmlFor="url">Amazon Link</Label>
                     </Col>
                     <Col xs="12" md="9">
                       <Input
-                        className={errors.amazonUrl ? "is-invalid" : ""}
+                        className={errors.url ? "is-invalid" : ""}
                         type="text"
-                        id="amazonUrl"
-                        name="amazonUrl"
+                        id="url"
+                        name="url"
                         placeholder="Amazon URL..."
                         autoComplete="amazon-url"
-                        value={amazonUrl}
+                        value={url}
                         onBlur={this.retrieveAmazonData}
                         onChange={this.handleChange}
                       />
-                      <div class="invalid-feedback">{errors.amazonUrl}</div>
+                      <div class="invalid-feedback">{errors.url}</div>
                       <FormText color="muted">
                         Place your Amazon Kindle book link here (should have
                         dp/XXXXXXXXXX/ inside which is the ASIN)
@@ -274,20 +274,20 @@ class Book extends Component {
                   </FormGroup>
                   <FormGroup row>
                     <Col md="3">
-                      <Label htmlFor="authorEmail">Author Email</Label>
+                      <Label htmlFor="email">Author Email</Label>
                     </Col>
                     <Col xs="12" md="9">
                       <Input
-                        className={errors.authorEmail ? "is-invalid" : ""}
+                        className={errors.email ? "is-invalid" : ""}
                         type="email"
-                        id="authorEmail"
-                        name="authorEmail"
+                        id="email"
+                        name="email"
                         placeholder="Author Email..."
                         autoComplete="email"
-                        value={authorEmail}
+                        value={email}
                         onChange={this.handleChange}
                       />
-                      <div class="invalid-feedback">{errors.authorEmail}</div>
+                      <div class="invalid-feedback">{errors.email}</div>
                       <FormText className="help-block">
                         Please enter/edit your email
                       </FormText>

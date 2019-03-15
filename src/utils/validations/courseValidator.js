@@ -1,21 +1,21 @@
 function courseValidator(state) {
   const {
-    udemyUrl,
+    url,
     title,
     instructorName,
-    instructorEmail,
+    email,
     keywords,
     summary
   } = state;
   let regex = /udemy.com\/(.*?)\//gm;
-  let result = regex.exec(udemyUrl);
+  let result = regex.exec(url);
   let errors = {};
-  udemyUrl === undefined || udemyUrl === "" || udemyUrl.length === 0
-    ? (errors.udemyUrl = "Udemy URL is required")
-    : delete errors.udemyUrl;
+  url === undefined || url === "" || url.length === 0
+    ? (errors.url = "Udemy URL is required")
+    : delete errors.url;
   result === null
-    ? (errors.udemyUrl = "Please provide a valid Udemy URL")
-    : delete errors.udemyUrl;
+    ? (errors.url = "Please provide a valid Udemy URL")
+    : delete errors.url;
   title === undefined || title === "" || title.length === 0
     ? (errors.title = "Title is required")
     : delete errors.title;
@@ -28,9 +28,9 @@ function courseValidator(state) {
   keywords === undefined || keywords === "" || keywords.length === 0
     ? (errors.keywords = "Keywords are required")
     : delete errors.keywords;
-  instructorEmail === undefined || instructorEmail === "" || instructorEmail.length === 0
-    ? (errors.instructorEmail = "Instructor email are required")
-    : delete errors.instructorEmail;
+  email === undefined || email === "" || email.length === 0
+    ? (errors.email = "Instructor email are required")
+    : delete errors.email;
   return errors;
 }
 

@@ -50,7 +50,7 @@ class Login extends Component {
     console.log("Logging");
     e.preventDefault();
     const { email, password } = this.state;
-    const { updateUser } = this.props;
+    const { loginUser } = this.props;
     const credentials = {
       email,
       password
@@ -63,21 +63,9 @@ class Login extends Component {
         if (!loginValidator(this.state.email, this.state.password)) return;
         try {
           const result = await Login.service.login(credentials);
-          if (!result.success) {
-            let errors = Object.values(result.errors);
-            errors.forEach(error => {
-              handleError(error);
-            });
-          }
-          window.localStorage.setItem("auth_token", result.token);
-          window.localStorage.setItem(
-            "user",
-            JSON.stringify({ ...result.user, isLoggedIn: true })
-          );
-          updateUser({
-            isLoggedIn: true,
-            ...result.user
-          });
+          !result.success
+            ? handleError(result.message)
+            : loginUser(result.token, result.user);
         } catch (error) {
           console.log(error);
           this.setState({
@@ -192,7 +180,7 @@ const LoginWithContext = props => {
         <Login
           {...props}
           isLoggedIn={user.isLoggedIn}
-          updateUser={user.updateUser}
+          loginUser={user.loginUser}
         />
       )}
     </UserConsumer>

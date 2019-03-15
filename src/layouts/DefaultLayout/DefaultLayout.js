@@ -1,5 +1,5 @@
 import React, { Component, Suspense } from "react";
-import { Redirect, Route, Switch } from "react-router-dom";
+import { Redirect, Route, Switch, BrowserRouter } from "react-router-dom";
 import { Container } from "reactstrap";
 import { UserConsumer } from "../../context/user-context";
 import {
@@ -31,19 +31,24 @@ const DefaultHeader = React.lazy(() => import("./DefaultHeader"));
 const AnonymousHeader = React.lazy(() => import("./AnonymousHeader"));
 
 class DefaultLayout extends Component {
+  constructor(props) {
+    super(props);
+  }
+
   loading = () => (
     <div className="animated fadeIn pt-1 text-center">Loading...</div>
   );
 
   signOut(e) {
+    const { logoutUser, history } = this.props;
     e.preventDefault();
-    this.props.history.push("/login");
+    history.replace("/login")
+    logoutUser();
   }
 
   componentWillMount() {
     console.log(this.props);
   }
-
   render() {
     const { isLoggedIn, username } = this.props;
     return (
@@ -116,11 +121,6 @@ class DefaultLayout extends Component {
               </Suspense>
             </Container>
           </main>
-          {/* <AppAside fixed>
-            <Suspense fallback={this.loading()}>
-              <DefaultAside />
-            </Suspense>
-          </AppAside> */}
         </div>
         <AppFooter>
           <Suspense fallback={this.loading()}>
@@ -135,11 +135,11 @@ class DefaultLayout extends Component {
 const LayoutWithContext = props => {
   return (
     <UserConsumer>
-      {user => (
+      { user => (
         <DefaultLayout
           {...props}
           isLoggedIn={user.isLoggedIn}
-          updateUser={user.updateUser}
+          logoutUser={user.logoutUser}
         />
       )}
     </UserConsumer>

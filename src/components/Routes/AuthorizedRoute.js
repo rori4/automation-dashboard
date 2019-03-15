@@ -3,7 +3,7 @@ import { Route } from "react-router-dom";
 import { Redirect } from "react-router-dom";
 import { UserConsumer } from "../../context/user-context";
 const AuthorizedRoute = (props) => {
-  const {isLoggedIn, roles, allowedRoles=[], rest} = props;
+  const {isLoggedIn, roles, allowedRoles=[]} = props;
   const roleIsAllowed =
     !allowedRoles.length ||
     roles
@@ -12,14 +12,14 @@ const AuthorizedRoute = (props) => {
   if (!isLoggedIn || !roleIsAllowed) {
     return <Redirect to="/login" />;
   }
-  return <Route {...rest} />;
+  return <Route {...props} />;
 };
 
 const AuthorizedRouteWithContext = props => {
   return (
     <UserConsumer>
       {({ isLoggedIn, roles }) => (
-        <AuthorizedRoute roles={roles} isLoggedIn={isLoggedIn} allowedRoles={props.allowedRoles} rest={props} />
+        <AuthorizedRoute {...props} roles={roles} isLoggedIn={isLoggedIn} allowedRoles={props.allowedRoles} />
       )}
     </UserConsumer>
   );

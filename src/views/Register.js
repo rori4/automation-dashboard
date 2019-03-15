@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Redirect } from 'react-router-dom';
 import {
   Button,
   Card,
@@ -50,7 +51,7 @@ class Register extends Component {
     console.log("Logging");
     e.preventDefault();
     const { username, email, password, errors } = this.state;
-    const { updateUser } = this.props;
+    const { loginUser } = this.props;
     const credentials = {
       username,
       email,
@@ -62,15 +63,7 @@ class Register extends Component {
         handleError(result.message);
         return;
       }
-      window.localStorage.setItem("auth_token", result.token);
-      window.localStorage.setItem(
-        "user",
-        JSON.stringify({ ...result.user, isLoggedIn: true })
-      );
-      updateUser({
-        isLoggedIn: true,
-        ...result.user
-      });
+      loginUser(result.token, result.user)
     } catch (errors) {
       console.log(errors);
       this.setState({
@@ -82,6 +75,10 @@ class Register extends Component {
 
   render() {
     const { errors } = this.state;
+    const { isLoggedIn } = this.props;
+    if (isLoggedIn) {
+      return <Redirect to="/" />;
+    }
     return (
       <div className="app flex-row align-items-center">
         <Container>
@@ -181,7 +178,8 @@ const RegisterWithContext = props => {
         <Register
           {...props}
           isLoggedIn={user.isLoggedIn}
-          updateUser={user.updateUser}
+          loginUser={user.loginUser}
+          logoutUser={user.logoutUser}
         />
       )}
     </UserConsumer>

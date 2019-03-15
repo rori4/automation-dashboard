@@ -1,22 +1,22 @@
 function bookValidator(state) {
   const {
-    amazonUrl,
+    url,
     title,
     authorName,
     synopsis,
     authorBio,
     keywords,
-    authorEmail
+    email
   } = state;
   let regex = /dp\/(.*?)\//gm;
-  let result = regex.exec(amazonUrl);
+  let result = regex.exec(url);
   let errors = {};
-  amazonUrl === undefined || amazonUrl === "" || amazonUrl.length === 0
-    ? (errors.amazonUrl = "Amazon URL is required")
-    : delete errors.amazonUrl;
+  url === undefined || url === "" || url.length === 0
+    ? (errors.url = "Amazon URL is required")
+    : delete errors.url;
   result === null
-    ? (errors.amazonUrl = "Please provide a valid amazon URL")
-    : delete errors.amazonUrl;
+    ? (errors.url = "Please provide a valid amazon URL")
+    : delete errors.url;
   title === undefined || title === "" || title.length === 0
     ? (errors.title = "Title is required")
     : delete errors.title;
@@ -32,9 +32,9 @@ function bookValidator(state) {
   keywords === undefined || keywords === "" || keywords.length === 0
     ? (errors.keywords = "Keywords are required")
     : delete errors.keywords;
-  authorEmail === undefined || authorEmail === "" || authorEmail.length === 0
-    ? (errors.authorEmail = "Author email are required")
-    : delete errors.authorEmail;
+  email === undefined || email === "" || email.length === 0
+    ? (errors.email = "Author email are required")
+    : delete errors.email;
   return errors;
 }
 

@@ -15,57 +15,41 @@ class AuthProvider extends React.Component {
     const userFromStorage = window.localStorage.getItem("user");
     const parsedUser = userFromStorage ? JSON.parse(userFromStorage) : {};
     const defaultUserState = {
-      roles: [],
-      user: "",
-      email: "",
-      isLoggedIn: false,
-    };
+        roles: [],
+        user: "",
+        email: "",
+        isLoggedIn: false
+      };
     this.state = {
       user: {
         ...defaultUserState,
         ...parsedUser,
         updateUser: this.updateUser,
         logoutUser: this.logoutUser,
-        loginUser: this.loginUser
       }
     };
   }
 
-  loginUser = (token, user) => {
-    window.localStorage.setItem("auth_token", token);
-    window.localStorage.setItem(
-      "user",
-      JSON.stringify({ ...user, isLoggedIn: true })
-    );
-    this.updateUser({
-      isLoggedIn: true,
-      ...user
-    });
-  };
-
   updateUser = user => {
-    this.setState({
-      user: {
-        ...user,
-        updateUser: this.updateUser,
-        logoutUser: this.logoutUser,
-        loginUser: this.loginUser
-      }
-    });
+    this.setState({ user });
   };
 
   logoutUser = () => {
-    window.localStorage.removeItem("user");
-    window.localStorage.removeItem("auth_token");
-    this.updateUser({
-      ...defaultUserState
-    });
-  };
+    window.localStorage.removeItem('user');
+    window.localStorage.removeItem('auth_token');
+    this.setState({
+      user: {
+        defaultUserState,
+      }
+    })
+  }
 
   render() {
-    const { user } = this.state;
+    const {user} = this.state;
     return (
-      <AuthContext.Provider value={user}>
+      <AuthContext.Provider
+        value={user}
+      >
         {this.props.children}
       </AuthContext.Provider>
     );

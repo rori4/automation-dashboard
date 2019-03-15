@@ -26,14 +26,14 @@ class Course extends Component {
   constructor(props) {
     super(props);
     this.initialState = {
-      udemyUrl: "",
+      url: "",
       title: "",
       price: "",
       instructorName: "",
       summary: "",
       keywords: "",
       cover: "",
-      instructorEmail: props.userEmail,
+      email: props.userEmail,
       udemyFetched: false,
       errors: {}
     };
@@ -71,9 +71,9 @@ class Course extends Component {
   };
   
   retrieveUdemyData = async () => {
-    const { udemyUrl } = this.state;
+    const { url } = this.state;
     try {
-      let result = await Course.udemyService.info({ udemyUrl });
+      let result = await Course.udemyService.info({ url });
       if (result.success) {
         let course = result.course;
         course.udemyFetched = true;
@@ -102,14 +102,14 @@ class Course extends Component {
 
   render() {
     const {
-      udemyUrl,
+      url,
       title,
       instructorName,
       keywords,
       cover,
       price,
       udemyFetched,
-      instructorEmail,
+      email,
       errors,
       summary
     } = this.state;
@@ -132,21 +132,21 @@ class Course extends Component {
                 <CardBody>
                   <FormGroup row>
                     <Col md="3">
-                      <Label htmlFor="udemyUrl">Udemy Link</Label>
+                      <Label htmlFor="url">Udemy Link</Label>
                     </Col>
                     <Col xs="12" md="9">
                       <Input
-                        className={errors.udemyUrl ? "is-invalid" : ""}
+                        className={errors.url ? "is-invalid" : ""}
                         type="text"
-                        id="udemyUrl"
-                        name="udemyUrl"
+                        id="url"
+                        name="url"
                         placeholder="Udemy URL..."
                         autoComplete="udemy-url"
-                        value={udemyUrl}
+                        value={url}
                         onBlur={this.retrieveUdemyData}
                         onChange={this.handleChange}
                       />
-                      <div class="invalid-feedback">{errors.udemyUrl}</div>
+                      <div class="invalid-feedback">{errors.url}</div>
                       <FormText color="muted">
                         Place your Udemy course link here
                       </FormText>
@@ -244,21 +244,21 @@ class Course extends Component {
                   </FormGroup>
                   <FormGroup row>
                     <Col md="3">
-                      <Label htmlFor="instructorEmail">Instructor Email</Label>
+                      <Label htmlFor="email">Instructor Email</Label>
                     </Col>
                     <Col xs="12" md="9">
                       <Input
-                        className={errors.instructorEmail ? "is-invalid" : ""}
+                        className={errors.email ? "is-invalid" : ""}
                         type="email"
-                        id="instructorEmail"
-                        name="instructorEmail"
+                        id="email"
+                        name="email"
                         placeholder="Instructor Email..."
                         autoComplete="email"
-                        value={instructorEmail}
+                        value={email}
                         onChange={this.handleChange}
                       />
                       <div class="invalid-feedback">
-                        {errors.instructorEmail}
+                        {errors.email}
                       </div>
                       <FormText className="help-block">
                         Please enter/edit your email

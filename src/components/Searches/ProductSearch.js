@@ -1,4 +1,4 @@
-import React, { Component, lazy, Suspense, Fragment } from "react";
+import React, { Component, Fragment } from "react";
 import {
   Button,
   Card,
@@ -13,20 +13,19 @@ import {
   InputGroupAddon,
   InputGroupText
 } from "reactstrap";
-import Moment from 'react-moment';
 import SweetAlert from "sweetalert-react";
-import { handleError, handleInfo } from "./../../utils/customToast";
+import Moment from "react-moment";
+import { handleError, handleInfo } from "../../utils/customToast";
 import { getStyle } from "@coreui/coreui/dist/js/coreui-utilities";
-import GiveawayService from './../../services/giveaway-service';
 
 const brandDanger = getStyle("--danger");
 
-class GiveawayList extends Component {
-  static giveawayService = new GiveawayService();
+class PromotionSearch extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
-      giveaways: [],
+      data: [],
       search: "",
       showDelete: false,
       deleteItemId: "",
@@ -41,20 +40,21 @@ class GiveawayList extends Component {
 
   handleChange = async ({ target }) => {
     this.setState({ [target.name]: target.value });
-    this.retreiveGiveaways();
+    this.retrieveData();
     console.log(this.state);
   };
 
   confirmDeleteDialog = async () => {
     const { deleteItemId } = this.state;
+    const { service } = this.props;
     try {
-      let result = await GiveawayList.giveawayService.delete({ id: deleteItemId });
+      let result = await service.delete({ id: deleteItemId });
       result.success ? handleInfo(result.message) : handleError(result.message);
     } catch (error) {
       handleError(error.message);
     }
     this.hideDialog();
-    this.retreiveGiveaways();
+    this.retrieveData();
   };
 
   cancelDeleteDialog = () => {
@@ -66,23 +66,17 @@ class GiveawayList extends Component {
   };
 
   componentDidMount() {
-    this.retreiveGiveaways();
+    this.retrieveData();
   }
 
-  truncate(string, size){
-    if (string.length > size)
-       return string.substring(0,size)+'...';
-    else
-       return string;
- };
-
-  async retreiveGiveaways() {
+  async retrieveData() {
     const { search } = this.state;
+    const { service } = this.props;
     try {
-      let result = await GiveawayList.giveawayService.list({ search });
+      let result = await service.list({ search });
       if (result.success) {
         this.setState({
-          courses: result.data,
+          data: result.data,
           isLoading: false
         });
       } else {
@@ -94,7 +88,8 @@ class GiveawayList extends Component {
   }
 
   render() {
-    const { isLoading, courses, showDelete, deleteItemTitle } = this.state;
+    const { isLoading, data, showDelete, deleteItemTitle } = this.state;
+    const { headerText } = this.props;
     return (
       <div className="animated fadeIn">
         <Row>
@@ -120,7 +115,7 @@ class GiveawayList extends Component {
         <Row>
           <Col>
             <Card>
-              <CardHeader>My Udemy Courses</CardHeader>
+              <CardHeader>{headerText}</CardHeader>
               <CardBody>
                 <Table
                   hover
@@ -131,8 +126,8 @@ class GiveawayList extends Component {
                     <tr>
                       <th className="text-center">Image</th>
                       <th className="text-center">Title</th>
-                      <th>Description</th>
-                      <th className="text-center">Sponsor Email</th>
+                      <th>Keywords</th>
+                      <th className="text-center">Author Email</th>
                       <th>Activity</th>
                     </tr>
                   </thead>
@@ -141,39 +136,40 @@ class GiveawayList extends Component {
                       this.loading
                     ) : (
                       <Fragment>
-                        {courses.map((item, key) => (
+                        {data.map((item, key) => (
                           <tr key={key}>
                             <td className="text-center">
                               <div className="book-list">
-                                <img
-                                  src={item.cover}
-                                  className="img-book"
-                                />
+                                <img src={item.cover} className="img-book" />
                               </div>
                             </td>
                             <td>
-                              <div>{item.title}</div>
-                              {/* TODO: Add date created */}
+                              <a href={item.url}>
+                                <div>{item.title}</div>
+                              </a>
                               <div className="small text-muted">
-                              Created On: <Moment format="LL">{item.createdOn}</Moment>
+                                Created On:{" "}
+                                <Moment format="LL">{item.createdOn}</Moment>
                               </div>
                             </td>
                             <td>
-                              {this.truncate(item.description,150)}
+                              {item.keywords.split(",").map((keyword, id) => (
+                                <Badge color="secondary m-1">
+                                  {keyword.trim()}
+                                </Badge>
+                              ))}
                             </td>
-                            <td className="text-center">
-                              {item.email}
-                            </td>
+                            <td className="text-center">{item.email}</td>
                             <td>
                               <a
                                 class="btn btn-warning mr-2 mb-2"
-                                href={"/giveaways/promote/" + item._id}
+                                href={"/books/promote/" + item._id}
                               >
                                 <i class="fa fa-flash" />
                               </a>
                               <a
                                 class="btn btn-success mr-2 mb-2"
-                                href={"/giveaways/edit/" + item._id}
+                                href={"/books/edit/" + item._id}
                               >
                                 <i class="fa fa-pencil" />
                               </a>
@@ -217,4 +213,4 @@ class GiveawayList extends Component {
   }
 }
 
-export default GiveawayList;
+export default PromotionSearch;

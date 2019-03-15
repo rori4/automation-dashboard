@@ -32,30 +32,11 @@ const Register = Loadable({
 });
 
 class App extends Component {
-  constructor(props) {
-    super(props);
-    const userFromStorage = window.localStorage.getItem('user');
-    const parsedUser = userFromStorage ? JSON.parse(userFromStorage) :{};
-
-    this.state = {
-      user: {
-        ...defaultUserState,
-        ...parsedUser,
-        updateUser: this.updateUser
-      }
-    };
-  }
-
-  updateUser = user => {
-    this.setState({ user });
-  };
-
   render() {
-    const { user } = this.state;
     return (
       <Router>
         <Fragment>
-          <UserProvider value={user}>
+          <UserProvider>
             <ToastContainer />
             <Switch>
               <Route exact path="/login" name="Login Page" component={Login} />
