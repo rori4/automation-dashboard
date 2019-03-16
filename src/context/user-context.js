@@ -16,7 +16,7 @@ class AuthProvider extends React.Component {
     const parsedUser = userFromStorage ? JSON.parse(userFromStorage) : {};
     const defaultUserState = {
       roles: [],
-      user: "",
+      username: "",
       email: "",
       isLoggedIn: false,
     };

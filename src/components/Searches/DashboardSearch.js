@@ -15,8 +15,6 @@ import {
 } from "reactstrap";
 import Moment from "react-moment";
 import { handleError, handleInfo } from "../../utils/customToast";
-import { mask } from "../../utils/stringUtil";
-import { debug } from "util";
 
 export default class DashboardSearch extends Component {
   constructor(props) {
@@ -30,7 +28,7 @@ export default class DashboardSearch extends Component {
   async retrieveData(search) {
     const { service } = this.props;
     try {
-      let result = await service.list({ search });
+      let result = await service.all({ search });
       if (result.success) {
         this.setState({
           data: result.data,
@@ -92,11 +90,21 @@ export default class DashboardSearch extends Component {
                         </div>
                       </td>
                       <td>
-                        {item.keywords.split(",").map((keyword, id) => (
-                          <Badge color="secondary m-1">{keyword.trim()}</Badge>
-                        ))}
+                        {item.keywords ? (
+                          item.keywords
+                            .split(",")
+                            .map((keyword, id) => (
+                              <Badge color="primary m-1">
+                                {keyword.trim()}
+                              </Badge>
+                            ))
+                        ) : (
+                          <Badge color="secondary m-1">no keywords</Badge>
+                        )}
                       </td>
-                      <td className="text-center">{item.email}</td>
+                      <td className="text-center">
+                        {item.email.replace(/[^@.]/g, "*")}
+                      </td>
                     </tr>
                   ))}
                 </Fragment>

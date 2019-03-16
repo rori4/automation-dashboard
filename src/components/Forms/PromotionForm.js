@@ -16,6 +16,7 @@ import {
 import { handleError, handleInfo } from "../../utils/customToast";
 import { decamelize } from "./../../utils/stringUtil";
 import requiredValidation from "./../../utils/validations/requiredValidation";
+import { startDateEndDateValidation } from "../../utils/validations/dateValidator";
 
 class PromotionForm extends Component {
   constructor(props) {
@@ -39,23 +40,31 @@ class PromotionForm extends Component {
           value.push(options[i].value);
         }
       }
-      this.setState({ [target.name]: value });
+      this.setState({ [target.name]: value }, () => this.checkDateValidity());
     } else {
       target.files
         ? this.setState({
             [target.name]: target.files[0]
           })
-        : this.setState({ [target.name]: target.value });
+        : this.setState({ [target.name]: target.value }, () =>
+            this.checkDateValidity()
+          );
     }
+  };
 
-    console.log(this.state);
+  checkDateValidity = () => {
+    const { startDate, endDate } = this.state;
+    let errors = startDateEndDateValidation(startDate, endDate);
+    this.setState({ errors });
   };
 
   handleSubmit = async e => {
     const { service, urlAfterSubmit } = this.props;
+    const { startDate, endDate } = this.state;
     try {
       e.preventDefault();
       let errors = requiredValidation(this.state);
+      Object.assign(errors, startDateEndDateValidation(startDate, endDate));
       this.setState(
         {
           errors
@@ -65,6 +74,8 @@ class PromotionForm extends Component {
             let result = await service.save(this.state);
             handleInfo(result.message);
             this.props.history.push(urlAfterSubmit);
+          } else {
+            handleError("There are errors inside the form");
           }
         }
       );

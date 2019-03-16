@@ -1,12 +1,10 @@
 import { get, remove } from "../data/crud";
 import { post } from "axios";
-class GiveawayService {
+import BaseService from './base-service';
+
+class GiveawayService extends BaseService {
   constructor() {
-    this.baseUrl = "http://localhost:5000/giveaways";
-    this.saveUrl = `${this.baseUrl}/save`;
-    this.deleteUrl = `${this.baseUrl}/delete`;
-    this.getUrl = `${this.baseUrl}/get`;
-    this.listUrl = `${this.baseUrl}/list`;
+    super('giveaways')
   }
 
   save(giveaway) {
@@ -24,18 +22,6 @@ class GiveawayService {
       }
     };
     return post(this.saveUrl, formData, config);
-  }
-
-  delete(id) {
-    return remove(this.deleteUrl, id);
-  }
-
-  get(id) {
-    return get(this.getUrl, id);
-  }
-
-  list(search) {
-    return get(this.listUrl, search);
   }
 }
 

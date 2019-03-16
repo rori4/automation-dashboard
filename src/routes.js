@@ -17,6 +17,8 @@ const Giveaway = React.lazy(() => import('./views/Giveaway/Giveaway'));
 const GiveawayList = React.lazy(() => import('./views/Giveaway/GiveawayList'));
 const GiveawayPromotionSubmit = React.lazy(() => import('./views/Giveaway/GiveawayPromotionSubmit'));
 const GiveawayPromotionSearch = React.lazy(() => import('./views/Giveaway/GiveawayPromotionSearch'));
+//USERS
+const UsersAdministration = React.lazy(() => import('./views/UsersAdministration'));
 
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
 const publicRoutes = [
@@ -46,7 +48,7 @@ const privateRoutes = [
 ];
 
 const adminRoutes = [
-  { path: '/admin/users', name: 'EditUsers', component: Book },
+  { path: '/admin/users', name: 'Users Administration', component: UsersAdministration },
 ]
 
 const allRoutes = publicRoutes.concat(privateRoutes).concat(adminRoutes);

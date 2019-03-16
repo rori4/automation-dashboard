@@ -107,6 +107,7 @@ class PromotionSearch extends Component {
                   name="search"
                   onChange={this.handleChange}
                   placeholder="What are you looking for?"
+                  disabled
                 />
               </InputGroup>
             </Card>

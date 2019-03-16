@@ -50,7 +50,7 @@ class DefaultLayout extends Component {
     console.log(this.props);
   }
   render() {
-    const { isLoggedIn, username } = this.props;
+    const { isLoggedIn } = this.props;
     return (
       <div className="app">
         <AppHeader fixed>
@@ -138,6 +138,8 @@ const LayoutWithContext = props => {
       { user => (
         <DefaultLayout
           {...props}
+          username={user.username}
+          roles={user.roles}
           isLoggedIn={user.isLoggedIn}
           logoutUser={user.logoutUser}
         />

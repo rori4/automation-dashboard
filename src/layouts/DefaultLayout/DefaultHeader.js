@@ -29,29 +29,37 @@ const defaultProps = {};
 class DefaultHeader extends Component {
   render() {
     // eslint-disable-next-line
-    const { children, isLoggedIn, username, ...attributes } = this.props;
+    const { children, isLoggedIn, username, roles, ...attributes } = this.props;
     return (
       <React.Fragment>
-        <AppNavbarBrand
-          full={{ src: logo, width: 89, height: 25, alt: "CoreUI Logo" }}
-          minimized={{ src: sygnet, width: 30, height: 30, alt: "CoreUI Logo" }}
-        />
+        <Link to="/">
+          <AppNavbarBrand
+            full={{ src: logo, width: 89, height: 25, alt: "CoreUI Logo" }}
+            minimized={{
+              src: sygnet,
+              width: 30,
+              height: 30,
+              alt: "CoreUI Logo"
+            }}
+          />
+        </Link>
         <AppSidebarToggler className="d-lg-none" display="md" mobile />
         <AppSidebarToggler className="d-md-down-none" display="lg" />
-        <Nav className="d-md-down-none" navbar>
-          <NavItem className="px-3">
-            <Link to="/" className="nav-link">
-              Dashboard
-            </Link>
-          </NavItem>
-          <NavItem className="px-3">
-            <Link to="/users">Users</Link>
-          </NavItem>
-          <NavItem className="px-3">
-            <NavLink href="#">Settings</NavLink>
-          </NavItem>
-        </Nav>
+        {(roles ? (
+          roles.includes("Admin")
+        ) : (
+          false
+        )) ? (
+          <Nav className="d-md-down-none" navbar>
+            <NavItem className="px-3">
+              <Link to="/admin/users" className="nav-link">
+                Users Administration
+              </Link>
+            </NavItem>
+          </Nav>
+        ) : null}
         <Nav className="ml-auto mr-4" navbar>
+          <NavItem className="px-3">Hello, {username}</NavItem>
           <AppHeaderDropdown direction="down">
             <DropdownToggle nav>
               <img

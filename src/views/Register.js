@@ -63,7 +63,8 @@ class Register extends Component {
         handleError(result.message);
         return;
       }
-      loginUser(result.token, result.user)
+      const login = await Register.service.login(credentials);
+      loginUser(login.token, login.user)
     } catch (errors) {
       console.log(errors);
       this.setState({
