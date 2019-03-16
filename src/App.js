@@ -3,11 +3,12 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "sweetalert/dist/sweetalert.css";
+import "ladda/dist/ladda.min.css";
 import "./App.scss";
 import Loadable from "react-loadable";
 import "./App.scss";
 import { UserProvider, defaultUserState } from "./context/user-context";
-import Logout from './views/Logout';
+import Logout from "./views/Logout";
 
 const loading = () => (
   <div className="animated fadeIn pt-3 text-center">Loading...</div>
@@ -15,7 +16,7 @@ const loading = () => (
 
 //DefaultLayout
 const DefaultLayout = Loadable({
-  loader: () => import('./layouts/DefaultLayout'),
+  loader: () => import("./layouts/DefaultLayout"),
   loading
 });
 

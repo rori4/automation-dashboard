@@ -13,6 +13,8 @@ import {
   Button,
   CardFooter
 } from "reactstrap";
+import * as Ladda from "ladda";
+
 import { handleError, handleInfo } from "../../utils/customToast";
 import { UserConsumer } from "../../context/user-context";
 import giveawayValidator from "./../../utils/validations/giveawayValidator";
@@ -35,7 +37,10 @@ class Giveaway extends Component {
       email: props.userEmail,
       errors: {}
     };
-    this.state = this.initialState;
+    this.state = {
+      ...this.initialState,
+      loading: false
+    };
   }
 
   handleChange = ({ target }) => {
@@ -72,6 +77,13 @@ class Giveaway extends Component {
     this.setState(this.initialState);
   };
 
+  toggleBtn = () => {
+    this.setState({
+      loading: !this.state.loading,
+      progress: 0.5
+    });
+  };
+
   async componentDidMount() {
     try {
       const id = this.props.match.params.id;
@@ -82,15 +94,15 @@ class Giveaway extends Component {
     } catch (error) {
       handleError(error.message);
     }
+    Ladda.bind("button[type=submit]", { timeout: 2000 });
   }
 
   getCoverPreview() {
     const { cover } = this.state;
     var isFile = typeof cover.name == "string";
-    if (isFile)
-      return cover !== "" ? URL.createObjectURL(cover) : "";
+    if (isFile) return cover !== "" ? URL.createObjectURL(cover) : "";
     else {
-      return cover
+      return cover;
     }
   }
 
@@ -375,9 +387,10 @@ class Giveaway extends Component {
                 <CardFooter>
                   <Button
                     type="submit"
-                    className="mr-3"
+                    className="mr-3 ladda-button"
                     size="sm"
                     color="primary"
+                    data-style="expand-right"
                   >
                     <i className="fa fa-dot-circle-o" /> Submit
                   </Button>

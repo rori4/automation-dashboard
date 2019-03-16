@@ -64,8 +64,6 @@ export default class DashboardSearch extends Component {
               <tr>
                 <th className="text-center">Image</th>
                 <th className="text-center">Title</th>
-                <th>Keywords</th>
-                <th className="text-center">Email</th>
               </tr>
             </thead>
             <tbody>
@@ -88,22 +86,6 @@ export default class DashboardSearch extends Component {
                           Created On:{" "}
                           <Moment format="LL">{item.createdOn}</Moment>
                         </div>
-                      </td>
-                      <td>
-                        {item.keywords ? (
-                          item.keywords
-                            .split(",")
-                            .map((keyword, id) => (
-                              <Badge color="primary m-1">
-                                {keyword.trim()}
-                              </Badge>
-                            ))
-                        ) : (
-                          <Badge color="secondary m-1">no keywords</Badge>
-                        )}
-                      </td>
-                      <td className="text-center">
-                        {item.email.replace(/[^@.]/g, "*")}
                       </td>
                     </tr>
                   ))}
