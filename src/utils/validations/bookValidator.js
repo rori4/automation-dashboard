@@ -8,7 +8,7 @@ function bookValidator(state) {
     keywords,
     email
   } = state;
-  let regex = /dp|gp\/product\/(.*?)\//gm;
+  let regex = /dp\/(.*?)\//gm;
   let result = regex.exec(url);
   let errors = {};
   url === undefined || url === "" || url.length === 0
